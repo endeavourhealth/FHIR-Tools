@@ -32,7 +32,7 @@
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.cbOpenBrowser = new System.Windows.Forms.CheckBox();
             this.tbBrowseOutputPath = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tbOutputPath = new System.Windows.Forms.TextBox();
             this.lblOutputPath = new System.Windows.Forms.Label();
             this.tbGenerate = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -42,8 +42,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.pnlTop = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
-            this.tbClear = new System.Windows.Forms.Button();
-            this.tbBrowse = new System.Windows.Forms.Button();
+            this.tbClearFileList = new System.Windows.Forms.Button();
+            this.tbBrowseForFiles = new System.Windows.Forms.Button();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.tbTemplateHtml = new System.Windows.Forms.TextBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label6 = new System.Windows.Forms.Label();
             this.tbPageTitlePrefix = new System.Windows.Forms.TextBox();
@@ -58,6 +63,9 @@
             this.tabPage1.SuspendLayout();
             this.pnlCenter.SuspendLayout();
             this.pnlTop.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,7 +73,7 @@
             // 
             this.pnlBottom.Controls.Add(this.cbOpenBrowser);
             this.pnlBottom.Controls.Add(this.tbBrowseOutputPath);
-            this.pnlBottom.Controls.Add(this.textBox1);
+            this.pnlBottom.Controls.Add(this.tbOutputPath);
             this.pnlBottom.Controls.Add(this.lblOutputPath);
             this.pnlBottom.Controls.Add(this.tbGenerate);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -98,19 +106,18 @@
             this.tbBrowseOutputPath.UseVisualStyleBackColor = true;
             this.tbBrowseOutputPath.Click += new System.EventHandler(this.tbBrowseOutputPath_Click);
             // 
-            // textBox1
+            // tbOutputPath
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbOutputPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.BackColor = System.Drawing.Color.White;
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Location = new System.Drawing.Point(24, 39);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(708, 25);
-            this.textBox1.TabIndex = 2;
-            this.textBox1.Text = "C:\\Users\\jonny\\Desktop";
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.tbOutputPath.BackColor = System.Drawing.Color.White;
+            this.tbOutputPath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbOutputPath.Location = new System.Drawing.Point(24, 39);
+            this.tbOutputPath.Name = "tbOutputPath";
+            this.tbOutputPath.ReadOnly = true;
+            this.tbOutputPath.Size = new System.Drawing.Size(708, 25);
+            this.tbOutputPath.TabIndex = 2;
+            this.tbOutputPath.Text = "C:\\Users\\jonny\\Desktop";
             // 
             // lblOutputPath
             // 
@@ -137,6 +144,7 @@
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
@@ -180,7 +188,6 @@
             this.tbFileList.ReadOnly = true;
             this.tbFileList.Size = new System.Drawing.Size(993, 501);
             this.tbFileList.TabIndex = 7;
-            this.tbFileList.TextChanged += new System.EventHandler(this.tbFileList_TextChanged);
             this.tbFileList.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbFileList_DragDrop);
             this.tbFileList.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbFileList_DragEnter);
             // 
@@ -199,8 +206,8 @@
             // pnlTop
             // 
             this.pnlTop.Controls.Add(this.label1);
-            this.pnlTop.Controls.Add(this.tbClear);
-            this.pnlTop.Controls.Add(this.tbBrowse);
+            this.pnlTop.Controls.Add(this.tbClearFileList);
+            this.pnlTop.Controls.Add(this.tbBrowseForFiles);
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTop.Location = new System.Drawing.Point(3, 3);
             this.pnlTop.Name = "pnlTop";
@@ -218,25 +225,79 @@
             this.label1.Text = "Note 1 - Files must contain StructureDefinition or ValueSet XML.\r\nNote 2 - The fi" +
     "le list box below supports drag and drop of files.";
             // 
-            // tbClear
+            // tbClearFileList
             // 
-            this.tbClear.Location = new System.Drawing.Point(153, 27);
-            this.tbClear.Name = "tbClear";
-            this.tbClear.Size = new System.Drawing.Size(127, 40);
-            this.tbClear.TabIndex = 4;
-            this.tbClear.Text = "Clear list";
-            this.tbClear.UseVisualStyleBackColor = true;
-            this.tbClear.Click += new System.EventHandler(this.tbClear_Click);
+            this.tbClearFileList.Location = new System.Drawing.Point(153, 27);
+            this.tbClearFileList.Name = "tbClearFileList";
+            this.tbClearFileList.Size = new System.Drawing.Size(127, 40);
+            this.tbClearFileList.TabIndex = 4;
+            this.tbClearFileList.Text = "Clear list";
+            this.tbClearFileList.UseVisualStyleBackColor = true;
+            this.tbClearFileList.Click += new System.EventHandler(this.tbClear_Click);
             // 
-            // tbBrowse
+            // tbBrowseForFiles
             // 
-            this.tbBrowse.Location = new System.Drawing.Point(20, 27);
-            this.tbBrowse.Name = "tbBrowse";
-            this.tbBrowse.Size = new System.Drawing.Size(127, 40);
-            this.tbBrowse.TabIndex = 3;
-            this.tbBrowse.Text = "Browse for files...";
-            this.tbBrowse.UseVisualStyleBackColor = true;
-            this.tbBrowse.Click += new System.EventHandler(this.tbBrowse_Click);
+            this.tbBrowseForFiles.Location = new System.Drawing.Point(20, 27);
+            this.tbBrowseForFiles.Name = "tbBrowseForFiles";
+            this.tbBrowseForFiles.Size = new System.Drawing.Size(127, 40);
+            this.tbBrowseForFiles.TabIndex = 3;
+            this.tbBrowseForFiles.Text = "Browse for files...";
+            this.tbBrowseForFiles.UseVisualStyleBackColor = true;
+            this.tbBrowseForFiles.Click += new System.EventHandler(this.tbBrowse_Click);
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.panel1);
+            this.tabPage3.Location = new System.Drawing.Point(4, 26);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(1039, 639);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Template HTML";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.tbTemplateHtml);
+            this.panel1.Controls.Add(this.panel2);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(3, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Padding = new System.Windows.Forms.Padding(5);
+            this.panel1.Size = new System.Drawing.Size(1033, 633);
+            this.panel1.TabIndex = 7;
+            // 
+            // tbTemplateHtml
+            // 
+            this.tbTemplateHtml.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbTemplateHtml.Font = new System.Drawing.Font("Courier New", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbTemplateHtml.Location = new System.Drawing.Point(5, 149);
+            this.tbTemplateHtml.Multiline = true;
+            this.tbTemplateHtml.Name = "tbTemplateHtml";
+            this.tbTemplateHtml.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.tbTemplateHtml.Size = new System.Drawing.Size(1023, 479);
+            this.tbTemplateHtml.TabIndex = 3;
+            this.tbTemplateHtml.Text = resources.GetString("tbTemplateHtml.Text");
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.label7);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel2.Location = new System.Drawing.Point(5, 5);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(1023, 144);
+            this.panel2.TabIndex = 2;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label7.Location = new System.Drawing.Point(0, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(143, 133);
+            this.label7.TabIndex = 0;
+            this.label7.Text = "Variables available:\r\n\r\n%TITLE%\r\n%PAGE_HEADER%\r\n%CONTENT%\r\n%VERSION%\r\n%DATE_GENER" +
+    "ATED%";
             // 
             // tabPage2
             // 
@@ -253,7 +314,7 @@
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(1039, 639);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Text content";
+            this.tabPage2.Text = "Index page content";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // label6
@@ -352,6 +413,11 @@
             this.pnlCenter.PerformLayout();
             this.pnlTop.ResumeLayout(false);
             this.pnlTop.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.ResumeLayout(false);
@@ -363,7 +429,7 @@
         private System.Windows.Forms.Panel pnlBottom;
         private System.Windows.Forms.Button tbGenerate;
         private System.Windows.Forms.Label lblOutputPath;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox tbOutputPath;
         private System.Windows.Forms.Button tbBrowseOutputPath;
         private System.Windows.Forms.CheckBox cbOpenBrowser;
         private System.Windows.Forms.TabControl tabControl1;
@@ -373,8 +439,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel pnlTop;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button tbClear;
-        private System.Windows.Forms.Button tbBrowse;
+        private System.Windows.Forms.Button tbClearFileList;
+        private System.Windows.Forms.Button tbBrowseForFiles;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TextBox tbIndexPageHtml;
         private System.Windows.Forms.Label label5;
@@ -384,6 +450,11 @@
         private System.Windows.Forms.TextBox tbHeadingText;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox tbPageTitlePrefix;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox tbTemplateHtml;
     }
 }
 

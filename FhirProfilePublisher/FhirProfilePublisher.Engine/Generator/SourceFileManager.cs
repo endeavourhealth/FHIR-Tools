@@ -44,7 +44,7 @@ namespace FhirProfilePublisher.Engine
                     if (!file.OutputFileNames.Contains(filename))
                     {
                         // calculate relative path properly
-                        string redirectHtml = Templates.Instance.GetRedirectPage("../" + file.OutputHtmlFilename);
+                        string redirectHtml = Pages.Instance.GetRedirectPage("../" + file.OutputHtmlFilename);
                         FileHelper.WriteUtf8Text(_outputPaths.GetOutputPath(file.FileType, filename), redirectHtml);
                     }
                 }

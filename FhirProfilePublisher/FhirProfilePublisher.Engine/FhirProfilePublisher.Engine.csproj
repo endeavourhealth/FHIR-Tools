@@ -49,7 +49,7 @@
     <Compile Include="Exceptions\FhirProfilePublisherException.cs" />
     <Compile Include="Exceptions\NoIdException.cs" />
     <Compile Include="Exceptions\ReferenceNotFoundException.cs" />
-    <Compile Include="WebContent\Templates.cs" />
+    <Compile Include="WebContent\Pages.cs" />
     <Compile Include="WebContent\Scripts.cs" />
     <Compile Include="WebContent\Images.cs" />
     <Compile Include="WebContent\Styles.cs" />
@@ -85,8 +85,7 @@
     <EmbeddedResource Include="WebContent\Styles\jquery-ui.css" />
     <EmbeddedResource Include="WebContent\Images\endeavourlogo.png" />
     <EmbeddedResource Include="WebContent\Images\fhirlogo.png" />
-    <EmbeddedResource Include="WebContent\Templates\Page.html" />
-    <EmbeddedResource Include="WebContent\Templates\RedirectPage.html" />
+    <EmbeddedResource Include="WebContent\Pages\RedirectPage.html" />
     <EmbeddedResource Include="WebContent\Scripts\treeviewhelpers.js" />
     <EmbeddedResource Include="WebContent\Images\bullet_black.png" />
     <EmbeddedResource Include="WebContent\Images\bullet_green.png" />

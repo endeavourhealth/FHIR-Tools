@@ -46,5 +46,17 @@ namespace FhirProfilePublisher.Properties {
                 this["OutputPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TemplateHTML {
+            get {
+                return ((string)(this["TemplateHTML"]));
+            }
+            set {
+                this["TemplateHTML"] = value;
+            }
+        }
     }
 }

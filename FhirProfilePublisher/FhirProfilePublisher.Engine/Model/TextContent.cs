@@ -12,5 +12,6 @@ namespace FhirProfilePublisher.Engine
         public string PageTitleSuffix { get; set; }
         public string FooterText { get; set; }
         public string IndexPageHtml { get; set; }
+        public string PageTemplate { get; set; }
     }
 }

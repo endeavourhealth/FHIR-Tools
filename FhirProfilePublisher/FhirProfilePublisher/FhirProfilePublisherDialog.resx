@@ -117,6 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="tbTemplateHtml.Text" xml:space="preserve">
+    <value>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;%TITLE%&lt;/title&gt;
+    &lt;link rel="stylesheet" href="styles/bootstrap.css" /&gt;
+    &lt;link rel="stylesheet" href="styles/jquery-ui.css" /&gt;
+    &lt;link rel="stylesheet" href="styles/style.css" /&gt;
+    &lt;script src="scripts/jquery-2.1.4.js"&gt;&lt;/script&gt;
+    &lt;script src="scripts/bootstrap.js"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id="segment-header" class="segment"&gt;
+      &lt;div class="container"&gt;
+        &lt;a id="logo" href="http://www.endeavourhealth.org/"&gt;
+          &lt;img src="images/endeavourlogo.png" alt="Endeavour Logo" /&gt;
+        &lt;/a&gt;
+        &lt;div id="fhir-status"&gt;
+          &lt;b&gt;%PAGE_HEADER%&lt;/b&gt;
+        &lt;/div&gt;
+        &lt;div id="fhir-nav"&gt;
+          &lt;a id="fhir-logo" href="http://www.hl7.org/fhir/"&gt;
+            &lt;img src="images/fhirlogo.png" alt="FHIR logo" /&gt;
+          &lt;/a&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div id="segment-navbar" class="segment"&gt;
+      &lt;div class="container"&gt;
+        &lt;a class="btn btn-primary" href="index.html"&gt;Overview&lt;/a&gt;
+        &lt;a class="btn btn-primary" href="resources.html"&gt;Resources&lt;/a&gt;
+        &lt;a class="btn btn-primary" href="valuesets.html"&gt;Value sets&lt;/a&gt;
+        &lt;a class="btn btn-primary" href="api.html"&gt;API&lt;/a&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div id="segment-content" class="segment"&gt;
+      &lt;div class="container"&gt;
+        &lt;div&gt;%CONTENT%&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div id="segment-footer" class="segment"&gt;
+      &lt;div class="container"&gt;© Endeavour Health Charitable Trust 2015. FHIR Implementation Guide %VERSION% generated on %DATE_GENERATED%.&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</value>
+  </data>
   <data name="tbIndexPageHtml.Text" xml:space="preserve">
     <value>&lt;div&gt;
     &lt;h3&gt;Overview&lt;/h3&gt;

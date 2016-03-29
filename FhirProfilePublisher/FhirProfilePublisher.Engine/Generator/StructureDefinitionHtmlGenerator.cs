@@ -66,7 +66,7 @@ namespace FhirProfilePublisher.Engine
                 GetTabbedContentView(structureDefinitionFile)
             }).ToString(SaveOptions.DisableFormatting);
 
-            return Templates.Instance.GetPage(definition.GetDisplayName(), content, "0.1", DateTime.Now);
+            return Pages.Instance.GetPage(definition.GetDisplayName(), content, "0.1", DateTime.Now);
         }
 
         private object[] GetMaturity(ResourceMaturity maturity)

@@ -52,7 +52,7 @@ namespace FhirProfilePublisher.Engine
 
             string contentHtml = Html.Div(content.ToArray()).ToString(SaveOptions.DisableFormatting);
 
-            return Templates.Instance.GetPage(displayName, contentHtml, "0.1", DateTime.Now);
+            return Pages.Instance.GetPage(displayName, contentHtml, "0.1", DateTime.Now);
         }
 
         private object[] GenerateContent(ValueSetFile valuesetFile, string displayName)

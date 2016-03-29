@@ -18,12 +18,32 @@ namespace FhirProfilePublisher
         {
             InitializeComponent();
 
-            this.textBox1.Text = Properties.Settings.Default.OutputPath;
-            
-            if (string.IsNullOrWhiteSpace(this.textBox1.Text))
-                this.textBox1.Text = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            LoadUserData();
+
+            this.tbFileList.TextChanged += (sender, e) => SaveUserData();
+            this.tbOutputPath.TextChanged += (sender, e) => SaveUserData();
+            this.tbTemplateHtml.TextChanged += (sender, e) => SaveUserData();
+        }
+
+        private void LoadUserData()
+        {
+            this.tbOutputPath.Text = Properties.Settings.Default.OutputPath;
+
+            if (string.IsNullOrWhiteSpace(this.tbOutputPath.Text))
+                this.tbOutputPath.Text = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
 
             this.tbFileList.Text = Properties.Settings.Default.InputFileList;
+
+            if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.TemplateHTML))
+                this.tbTemplateHtml.Text = Properties.Settings.Default.TemplateHTML;
+        }
+
+        private void SaveUserData()
+        {
+            Properties.Settings.Default.InputFileList = tbFileList.Text;
+            Properties.Settings.Default.OutputPath = tbOutputPath.Text;
+            Properties.Settings.Default.TemplateHTML = tbTemplateHtml.Text;
+            Properties.Settings.Default.Save();
         }
 
         private void tbBrowse_Click(object sender, EventArgs e)
@@ -62,9 +82,9 @@ namespace FhirProfilePublisher
                     if (!tbFileList.Lines.Contains(file))
                         tbFileList.Text += file + Environment.NewLine;
 
-            if (string.IsNullOrEmpty(textBox1.Text))
+            if (string.IsNullOrEmpty(tbOutputPath.Text))
                 if (tbFileList.Lines.Length > 0)
-                    textBox1.Text = Path.GetDirectoryName(tbFileList.Lines.First());
+                    tbOutputPath.Text = Path.GetDirectoryName(tbFileList.Lines.First());
         }
 
         private void tbGenerate_Click(object sender, EventArgs e)
@@ -80,11 +100,12 @@ namespace FhirProfilePublisher
                     HeaderText = tbHeadingText.Text,
                     PageTitleSuffix = tbPageTitlePrefix.Text,
                     FooterText = tbFootingText.Text,
-                    IndexPageHtml = tbIndexPageHtml.Text
+                    IndexPageHtml = tbIndexPageHtml.Text,
+                    PageTemplate = tbTemplateHtml.Text
                 };
 
                 HtmlGenerator generator = new HtmlGenerator();
-                string htmlFilePath = generator.Generate(tbFileList.Lines, textBox1.Text, content);
+                string htmlFilePath = generator.Generate(tbFileList.Lines, tbOutputPath.Text, content);
 
                 if (cbOpenBrowser.Checked)
                     WebHelper.LaunchBrowser(htmlFilePath);
@@ -108,24 +129,12 @@ namespace FhirProfilePublisher
         {
             using (FolderBrowserDialog dialog = new FolderBrowserDialog())
             {
-                if (!string.IsNullOrEmpty(textBox1.Text))
-                    dialog.SelectedPath = textBox1.Text;
+                if (!string.IsNullOrEmpty(tbOutputPath.Text))
+                    dialog.SelectedPath = tbOutputPath.Text;
                 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    textBox1.Text = dialog.SelectedPath;
+                    tbOutputPath.Text = dialog.SelectedPath;
             }
-        }
-
-        private void tbFileList_TextChanged(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.InputFileList = tbFileList.Text;
-            Properties.Settings.Default.Save();
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.OutputPath = textBox1.Text;
-            Properties.Settings.Default.Save();
         }
     }
 }

@@ -35,8 +35,9 @@ namespace FhirProfilePublisher.Engine
                 valueSetPath: "ValueSet"
             );
 
-            Templates.Instance.PageHeader = textContent.HeaderText;
-            Templates.Instance.PageTitleSuffix = textContent.PageTitleSuffix;
+            Pages.Instance.PageHeader = textContent.HeaderText;
+            Pages.Instance.PageTitleSuffix = textContent.PageTitleSuffix;
+            Pages.Instance.TemplatePage = textContent.PageTemplate;
 
             ResourceFileSet resourceFileSet = new ResourceFileSet();
             resourceFileSet.LoadXmlResourceFiles(inputFilePaths);

@@ -24,7 +24,7 @@ namespace FhirProfilePublisher.Engine
 
         private string GenerateHtml(string title, string content)
         {
-            return Templates.Instance.GetPage(title, content, "0.1", DateTime.Now);
+            return Pages.Instance.GetPage(title, content, "0.1", DateTime.Now);
         }
     }
 }

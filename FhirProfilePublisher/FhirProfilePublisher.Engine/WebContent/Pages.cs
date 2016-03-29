@@ -10,34 +10,32 @@ using FhirProfilePublisher.Specification;
 
 namespace FhirProfilePublisher.Engine
 {
-    internal class Templates
+    internal class Pages
     {
-        private static readonly string TemplatesResourceLocation = typeof(Styles).Assembly.GetName().Name + ".WebContent.Templates.";
-        private static readonly string TemplatePageFileName = TemplatesResourceLocation + "Page.html";
+        private static readonly string TemplatesResourceLocation = typeof(Styles).Assembly.GetName().Name + ".WebContent.Pages.";
         private static readonly string TemplateRedirectPageFileName = TemplatesResourceLocation + "RedirectPage.html";
         
-        private static Templates _instance = null;
+        private static Pages _instance = null;
 
-        public static Templates Instance
+        public static Pages Instance
         {
             get
             {
                 if (_instance == null)
-                    _instance = new Templates();
+                    _instance = new Pages();
 
                 return _instance;
             }
         }
 
-        private string _templatePage;
         private string _templateRedirectPage;
 
+        public string TemplatePage { get; set; }
         public string PageHeader { get; set; }
         public string PageTitleSuffix { get; set; }
 
-        private Templates()
+        private Pages()
         {
-            _templatePage = ResourceHelper.LoadStringResource(TemplatePageFileName);
             _templateRedirectPage = ResourceHelper.LoadStringResource(TemplateRedirectPageFileName);
             PageHeader = "FHIR Implementation Guide (Draft)";
             PageTitleSuffix = string.Empty;
@@ -45,7 +43,7 @@ namespace FhirProfilePublisher.Engine
 
         public string GetPage(string title, string content, string version, DateTime dateGenerated)
         {
-            return _templatePage
+            return TemplatePage
                     .Replace("%PAGE_HEADER%", PageHeader)
                     .Replace("%TITLE%", title + PageTitleSuffix)
                     .Replace("%CONTENT%", content)

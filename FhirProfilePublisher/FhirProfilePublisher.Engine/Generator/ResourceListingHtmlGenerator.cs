@@ -70,7 +70,7 @@ namespace FhirProfilePublisher.Engine
             })
             .ToString(SaveOptions.DisableFormatting);
 
-            string html = Templates.Instance.GetPage(itemTypeName, contentHtml, "0.1", DateTime.Now);
+            string html = Pages.Instance.GetPage(itemTypeName, contentHtml, "0.1", DateTime.Now);
 
             _outputPaths.WriteUtf8File(OutputFileType.Html, fileName, html);
         }
