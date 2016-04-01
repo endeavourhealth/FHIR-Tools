@@ -23,6 +23,9 @@ namespace FhirProfilePublisher
             this.tbFileList.TextChanged += (sender, e) => SaveUserData();
             this.tbOutputPath.TextChanged += (sender, e) => SaveUserData();
             this.tbTemplateHtml.TextChanged += (sender, e) => SaveUserData();
+            this.tbHeadingText.TextChanged += (sender, e) => SaveUserData();
+            this.tbPageTitlePrefix.TextChanged += (sender, e) => SaveUserData();
+            this.tbIndexPageHtml.TextChanged += (sender, e) => SaveUserData();
         }
 
         private void LoadUserData()
@@ -36,6 +39,15 @@ namespace FhirProfilePublisher
 
             if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.TemplateHTML))
                 this.tbTemplateHtml.Text = Properties.Settings.Default.TemplateHTML;
+
+            if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.PageTitleSuffix))
+                this.tbPageTitlePrefix.Text = Properties.Settings.Default.PageTitleSuffix;
+
+            if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.IndexPageHTML))
+                this.tbIndexPageHtml.Text = Properties.Settings.Default.IndexPageHTML;
+
+            if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.HeadingText))
+                this.tbHeadingText.Text = Properties.Settings.Default.HeadingText;
         }
 
         private void SaveUserData()
@@ -43,6 +55,9 @@ namespace FhirProfilePublisher
             Properties.Settings.Default.InputFileList = tbFileList.Text;
             Properties.Settings.Default.OutputPath = tbOutputPath.Text;
             Properties.Settings.Default.TemplateHTML = tbTemplateHtml.Text;
+            Properties.Settings.Default.PageTitleSuffix = tbPageTitlePrefix.Text;
+            Properties.Settings.Default.IndexPageHTML = tbIndexPageHtml.Text;
+            Properties.Settings.Default.HeadingText = tbHeadingText.Text;
             Properties.Settings.Default.Save();
         }
 

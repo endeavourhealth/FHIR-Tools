@@ -59,8 +59,7 @@ namespace FhirProfilePublisher.Engine
                 Html.Pre(definition.url.value),
                 Html.P(GetMaturity(structureDefinitionFile.Maturity)),
                 Html.H3("Description"),
-                Html.P(definition.GetDisplayName() + "."),
-                Html.P(definition.description.WhenNotNull(t => t.value)),
+                Html.P(definition.description.WhenNotNull(t => t.value) ?? (definition.GetDisplayName() + ".")),
                 Html.H3("Definition"),
                 Html.P(GetBaseProfileSentence(definition)),
                 GetTabbedContentView(structureDefinitionFile)

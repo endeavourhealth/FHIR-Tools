@@ -58,5 +58,41 @@ namespace FhirProfilePublisher.Properties {
                 this["TemplateHTML"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PageTitleSuffix {
+            get {
+                return ((string)(this["PageTitleSuffix"]));
+            }
+            set {
+                this["PageTitleSuffix"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string HeadingText {
+            get {
+                return ((string)(this["HeadingText"]));
+            }
+            set {
+                this["HeadingText"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string IndexPageHTML {
+            get {
+                return ((string)(this["IndexPageHTML"]));
+            }
+            set {
+                this["IndexPageHTML"] = value;
+            }
+        }
     }
 }
