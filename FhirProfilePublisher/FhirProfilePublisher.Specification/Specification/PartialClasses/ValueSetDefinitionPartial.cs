@@ -16,7 +16,7 @@ namespace Hl7.Fhir.V102
 
             return extension
                 .FirstOrDefault(t => t.url == extensionUrl)
-                .WhenNotNull(t => t.Item.GetValueAsString());
+                .WhenNotNull(t => t.Item.WhenNotNull(s => s.GetValueAsString()));
         }
     }
 }
