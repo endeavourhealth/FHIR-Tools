@@ -1,10 +1,10 @@
-﻿using Hl7.Fhir.V102;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Hl7.Fhir.V102;
 using FhirProfilePublisher.Specification;
 
 namespace FhirProfilePublisher.Engine
@@ -77,25 +77,29 @@ namespace FhirProfilePublisher.Engine
 
         public void LoadXmlResourceFiles(string[] inputFilePaths)
         {
-            string[] inputFiles = inputFilePaths
-                .Where(t => !string.IsNullOrEmpty(t))
-                .Select(t => FileHelper.ReadInputFile(t))
-                .ToArray();
-
-            foreach (string inputFile in inputFiles)
-                AddXmlResourceFile(inputFile);
+            foreach (string inputFilePath in inputFilePaths)
+                AddXmlResourceFile(inputFilePath);
         }
 
-        private void AddXmlResourceFile(string fhirProfileXml)
+        private void AddXmlResourceFile(string inputFilePath)
         {
-            string rootNodeName = XmlHelper.GetRootNodeName(fhirProfileXml);
+            try
+            {
+                string fhirProfileXml = FileHelper.ReadInputFile(inputFilePath);
 
-            if (rootNodeName == typeof(StructureDefinition).Name)
-                _structureDefinitions.Add(new StructureDefinitionFile(fhirProfileXml));
-            else if (rootNodeName == typeof(ValueSet).Name)
-                _valueSets.Add(new ValueSetFile(fhirProfileXml));
-            else
-                throw new NotSupportedException(rootNodeName + " not recognised as FHIR profile resource.");
+                string rootNodeName = XmlHelper.GetRootNodeName(fhirProfileXml);
+
+                if (rootNodeName == typeof(StructureDefinition).Name)
+                    _structureDefinitions.Add(new StructureDefinitionFile(fhirProfileXml));
+                else if (rootNodeName == typeof(ValueSet).Name)
+                    _valueSets.Add(new ValueSetFile(fhirProfileXml));
+                else
+                    throw new NotSupportedException(rootNodeName + " not recognised as FHIR profile resource.");
+            }
+            catch (Exception e)
+            {
+                throw new FhirProfilePublisherException("Error loading file " + inputFilePath + ". Details: " + e.GetType().Name + ", " + e.Message, e);
+            }
         }
 
         public StructureDefinition GetStructureDefinition(string url)

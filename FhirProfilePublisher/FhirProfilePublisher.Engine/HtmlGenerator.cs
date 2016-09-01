@@ -40,7 +40,7 @@ namespace FhirProfilePublisher.Engine
             Pages.Instance.TemplatePage = textContent.PageTemplate;
 
             ResourceFileSet resourceFileSet = new ResourceFileSet();
-            resourceFileSet.LoadXmlResourceFiles(inputFilePaths);
+            resourceFileSet.LoadXmlResourceFiles(inputFilePaths.Where(t => !string.IsNullOrWhiteSpace(t)).ToArray());
 
             return GenerateHtml(resourceFileSet, outputPaths, textContent);
         }
