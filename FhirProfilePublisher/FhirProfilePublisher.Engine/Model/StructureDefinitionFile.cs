@@ -36,17 +36,29 @@ namespace FhirProfilePublisher.Engine
 
         public override string OutputHtmlFilename
         {
-            get { return StructureDefinition.id.value + (StructureDefinition.IsExtension() ? ".extension" : string.Empty) + "." + HtmlExtension; }
+            get { return OutputFilenameRoot + (StructureDefinition.IsExtension() ? ".extension" : string.Empty) + "." + HtmlExtension; }
         }
 
         public override string OutputXmlFilename
         {
-            get { return StructureDefinition.id.value + "." + XmlExtension; }
+            get { return OutputFilenameRoot + "." + XmlExtension; }
         }
 
         public override string OutputJsonFilename
         {
-            get { return StructureDefinition.id.value + "." + JsonExtension; }
+            get { return OutputFilenameRoot + "." + JsonExtension; }
+        }
+
+        private string OutputFilenameRoot
+        {
+            get
+            {
+                if (StructureDefinition.id != null)
+                    if (!string.IsNullOrWhiteSpace(StructureDefinition.id.value))
+                        return StructureDefinition.id.value;
+
+                return StructureDefinition.name.value;
+            }
         }
 
         public override ResourceMaturity Maturity
