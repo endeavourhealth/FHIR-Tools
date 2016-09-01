@@ -55,7 +55,7 @@ namespace Hl7.Fhir.V102
 
             Extension ext = extension.FirstOrDefault(t => t.url == url);
 
-            return ext.Item.GetValueAsString();
+            return ext.WhenNotNull(t => t.Item.GetValueAsString());
         }
 
         public ElementDefinition GetRootPathElement()
