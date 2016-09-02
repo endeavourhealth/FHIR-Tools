@@ -17,7 +17,7 @@ namespace FhirProfilePublisher.Engine
         {
         }
 
-        public string Generate(string[] inputFilePaths, string outputDirectory, TextContent textContent, bool showAllResourcesOnOnePage)
+        public string Generate(string[] inputFilePaths, string outputDirectory, TextContent textContent, bool showEverythingOnOnePage)
         {
             if (inputFilePaths == null)
                 throw new ArgumentNullException("inputFilePaths");
@@ -42,10 +42,10 @@ namespace FhirProfilePublisher.Engine
             ResourceFileSet resourceFileSet = new ResourceFileSet();
             resourceFileSet.LoadXmlResourceFiles(inputFilePaths.Where(t => !string.IsNullOrWhiteSpace(t)).ToArray());
 
-            return GenerateHtml(resourceFileSet, outputPaths, textContent, showAllResourcesOnOnePage);
+            return GenerateHtml(resourceFileSet, outputPaths, textContent, showEverythingOnOnePage);
         }
 
-        private string GenerateHtml(ResourceFileSet resourceFileSet, OutputPaths outputPaths, TextContent textContent, bool showAllResourcesOnOnePage)
+        private string GenerateHtml(ResourceFileSet resourceFileSet, OutputPaths outputPaths, TextContent textContent, bool showEverythingOnOnePage)
         {
             // copy supporting files
             Styles.WriteStylesToDisk(outputPaths);
@@ -56,10 +56,14 @@ namespace FhirProfilePublisher.Engine
             StructureDefinitionHtmlGenerator structureDefinitionGenerator = new StructureDefinitionHtmlGenerator(resourceFileSet, outputPaths);
             structureDefinitionGenerator.GenerateAll();
 
-            if (showAllResourcesOnOnePage)
+            // valueset pages
+            ValueSetHtmlGenerator valuesetGenerator = new ValueSetHtmlGenerator(resourceFileSet, outputPaths);
+            valuesetGenerator.GenerateAll();
+
+            if (showEverythingOnOnePage)
             {
                 ResourceListingHtmlGenerator resourceListingGenerator = new ResourceListingHtmlGenerator(outputPaths);
-                resourceListingGenerator.GenerateAllResourcesListing("resources.html", resourceFileSet);
+                resourceListingGenerator.GenerateSingleResourceListingPageWithPreamble("index.html", resourceFileSet, textContent.IndexPageHtml);
             }
             else
             {
@@ -68,17 +72,12 @@ namespace FhirProfilePublisher.Engine
 
                 ResourceListingHtmlGenerator valueSetsListingGenerator = new ResourceListingHtmlGenerator(outputPaths);
                 resourceListingGenerator.GenerateValueSetListing("valuesets.html", resourceFileSet);
-            }            
 
-            // valueset pages
-            ValueSetHtmlGenerator valuesetGenerator = new ValueSetHtmlGenerator(resourceFileSet, outputPaths);
-            valuesetGenerator.GenerateAll();
+                GenericPageGenerator pageGenerator = new GenericPageGenerator(outputPaths);
+                pageGenerator.Generate("index.html", "Overview", textContent.IndexPageHtml);
 
-            // other pages
-            GenericPageGenerator pageGenerator = new GenericPageGenerator(outputPaths);
-            pageGenerator.Generate("index.html", "Overview", textContent.IndexPageHtml);
-
-            pageGenerator.Generate("api.html", "API", GetApiPageContent());
+                pageGenerator.Generate("api.html", "API", GetApiPageContent());
+            }
 
             // profile xml and json files
             SourceFileManager sourceGenerator = new SourceFileManager(outputPaths, resourceFileSet);

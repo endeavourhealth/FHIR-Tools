@@ -18,10 +18,13 @@ namespace FhirProfilePublisher.Engine
             _outputPaths = outputPaths;
         }
 
-        internal void GenerateAllResourcesListing(string fileName, ResourceFileSet resourceFileSet)
+        internal void GenerateSingleResourceListingPageWithPreamble(string fileName, ResourceFileSet resourceFileSet, string preambleHtml)
         {
             List<object> structureDefinitionListing = GetStructureDefinitionListing(resourceFileSet);
             XElement valuesetListing = GetValueSetListing(resourceFileSet);
+
+            structureDefinitionListing.Insert(0, XElement.Parse("<div>" + preambleHtml + "</div>"));
+            structureDefinitionListing.Insert(1, Html.H3("Resources"));
 
             structureDefinitionListing.AddRange(new object[]
             {
@@ -30,7 +33,7 @@ namespace FhirProfilePublisher.Engine
                 valuesetListing
             });
 
-            WritePage(fileName, "Resources", Html.Div(structureDefinitionListing.ToArray()));
+            WritePage(fileName, "Overview", Html.Div(structureDefinitionListing.ToArray()));
         }
 
         internal void GenerateStructureDefinitionListing(string fileName, ResourceFileSet resourceFileSet)
