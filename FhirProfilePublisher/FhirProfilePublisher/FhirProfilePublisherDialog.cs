@@ -120,7 +120,7 @@ namespace FhirProfilePublisher
                 };
 
                 HtmlGenerator generator = new HtmlGenerator();
-                string htmlFilePath = generator.Generate(tbFileList.Lines, tbOutputPath.Text, content);
+                string htmlFilePath = generator.Generate(tbFileList.Lines, tbOutputPath.Text, content, false);
 
                 if (cbOpenBrowser.Checked)
                     WebHelper.LaunchBrowser(htmlFilePath);

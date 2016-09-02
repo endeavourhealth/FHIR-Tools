@@ -18,8 +18,30 @@ namespace FhirProfilePublisher.Engine
             _outputPaths = outputPaths;
         }
 
+        internal void GenerateAllResourcesListing(string fileName, ResourceFileSet resourceFileSet)
+        {
+            List<object> structureDefinitionListing = GetStructureDefinitionListing(resourceFileSet);
+            XElement valuesetListing = GetValueSetListing(resourceFileSet);
+
+            structureDefinitionListing.AddRange(new object[]
+            {
+                Html.H3("Value sets"),
+                Html.P("The structures above refer to the following value sets:"),
+                valuesetListing
+            });
+
+            WritePage(fileName, "Resources", Html.Div(structureDefinitionListing.ToArray()));
+        }
+
         internal void GenerateStructureDefinitionListing(string fileName, ResourceFileSet resourceFileSet)
         {
+            List<object> structureDefinitionListing = GetStructureDefinitionListing(resourceFileSet);
+
+            WritePage(fileName, "Resources", Html.Div(structureDefinitionListing.ToArray()));
+        }
+
+        private List<object> GetStructureDefinitionListing(ResourceFileSet resourceFileSet)
+        { 
             List<object> result = new List<object>();
 
             foreach (string w5Group in resourceFileSet.StructureDefinitionsByW5Group.Keys.OrderBy(t => t))
@@ -47,16 +69,23 @@ namespace FhirProfilePublisher.Engine
                 extensionContent
             });
 
-            WritePage(fileName, "Resources", Html.Div(result.ToArray()));
+            return result;
         }
 
-        internal void GenerateValueSetListing(string fileName, ResourceFileSet resourceFileSet)
+        private XElement GetValueSetListing(ResourceFileSet resourceFileSet)
         {
             ValueSetFile[] items = resourceFileSet.ValueSetFiles
                 .OrderBy(t => t.Name)
                 .ToArray();
 
             XElement content = GenerateItemList(items);
+
+            return content;
+        }
+
+        internal void GenerateValueSetListing(string fileName, ResourceFileSet resourceFileSet)
+        {
+            XElement content = GetValueSetListing(resourceFileSet);
 
             WritePage(fileName, "Value sets", content);
         }

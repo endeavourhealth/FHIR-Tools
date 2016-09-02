@@ -91,7 +91,7 @@
             this.cbOpenBrowser.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbOpenBrowser.Location = new System.Drawing.Point(603, 78);
             this.cbOpenBrowser.Name = "cbOpenBrowser";
-            this.cbOpenBrowser.Size = new System.Drawing.Size(237, 23);
+            this.cbOpenBrowser.Size = new System.Drawing.Size(568, 50);
             this.cbOpenBrowser.TabIndex = 4;
             this.cbOpenBrowser.Text = "Open generated HTML in browser";
             this.cbOpenBrowser.UseVisualStyleBackColor = true;
@@ -115,7 +115,7 @@
             this.tbOutputPath.Location = new System.Drawing.Point(24, 39);
             this.tbOutputPath.Name = "tbOutputPath";
             this.tbOutputPath.ReadOnly = true;
-            this.tbOutputPath.Size = new System.Drawing.Size(708, 25);
+            this.tbOutputPath.Size = new System.Drawing.Size(708, 52);
             this.tbOutputPath.TabIndex = 2;
             this.tbOutputPath.Text = "C:\\Users\\jonny\\Desktop";
             // 
@@ -127,7 +127,7 @@
             this.lblOutputPath.Location = new System.Drawing.Point(20, 10);
             this.lblOutputPath.Name = "lblOutputPath";
             this.lblOutputPath.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);
-            this.lblOutputPath.Size = new System.Drawing.Size(89, 29);
+            this.lblOutputPath.Size = new System.Drawing.Size(216, 56);
             this.lblOutputPath.TabIndex = 1;
             this.lblOutputPath.Text = "Output path";
             // 
@@ -157,10 +157,10 @@
             // 
             this.tabPage1.Controls.Add(this.pnlCenter);
             this.tabPage1.Controls.Add(this.pnlTop);
-            this.tabPage1.Location = new System.Drawing.Point(4, 26);
+            this.tabPage1.Location = new System.Drawing.Point(10, 62);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1039, 639);
+            this.tabPage1.Size = new System.Drawing.Size(1027, 597);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Input files";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -173,7 +173,7 @@
             this.pnlCenter.Location = new System.Drawing.Point(3, 86);
             this.pnlCenter.Name = "pnlCenter";
             this.pnlCenter.Padding = new System.Windows.Forms.Padding(20, 0, 20, 20);
-            this.pnlCenter.Size = new System.Drawing.Size(1033, 550);
+            this.pnlCenter.Size = new System.Drawing.Size(1021, 508);
             this.pnlCenter.TabIndex = 5;
             // 
             // tbFileList
@@ -182,11 +182,11 @@
             this.tbFileList.BackColor = System.Drawing.Color.White;
             this.tbFileList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbFileList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbFileList.Location = new System.Drawing.Point(20, 29);
+            this.tbFileList.Location = new System.Drawing.Point(20, 56);
             this.tbFileList.Multiline = true;
             this.tbFileList.Name = "tbFileList";
             this.tbFileList.ReadOnly = true;
-            this.tbFileList.Size = new System.Drawing.Size(993, 501);
+            this.tbFileList.Size = new System.Drawing.Size(981, 432);
             this.tbFileList.TabIndex = 7;
             this.tbFileList.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbFileList_DragDrop);
             this.tbFileList.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbFileList_DragEnter);
@@ -199,7 +199,7 @@
             this.label2.Location = new System.Drawing.Point(20, 0);
             this.label2.Name = "label2";
             this.label2.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);
-            this.label2.Size = new System.Drawing.Size(91, 29);
+            this.label2.Size = new System.Drawing.Size(224, 56);
             this.label2.TabIndex = 6;
             this.label2.Text = "Input file list";
             // 
@@ -211,16 +211,16 @@
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTop.Location = new System.Drawing.Point(3, 3);
             this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Size = new System.Drawing.Size(1033, 83);
+            this.pnlTop.Size = new System.Drawing.Size(1021, 83);
             this.pnlTop.TabIndex = 4;
             // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(584, 29);
+            this.label1.Location = new System.Drawing.Point(572, 29);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(402, 38);
+            this.label1.Size = new System.Drawing.Size(977, 92);
             this.label1.TabIndex = 5;
             this.label1.Text = "Note 1 - Files must contain StructureDefinition or ValueSet XML.\r\nNote 2 - The fi" +
     "le list box below supports drag and drop of files.";
@@ -248,10 +248,10 @@
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.panel1);
-            this.tabPage3.Location = new System.Drawing.Point(4, 26);
+            this.tabPage3.Location = new System.Drawing.Point(10, 62);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1039, 639);
+            this.tabPage3.Size = new System.Drawing.Size(1027, 597);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Template HTML";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -264,7 +264,7 @@
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(5);
-            this.panel1.Size = new System.Drawing.Size(1033, 633);
+            this.panel1.Size = new System.Drawing.Size(1021, 591);
             this.panel1.TabIndex = 7;
             // 
             // tbTemplateHtml
@@ -275,7 +275,7 @@
             this.tbTemplateHtml.Multiline = true;
             this.tbTemplateHtml.Name = "tbTemplateHtml";
             this.tbTemplateHtml.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbTemplateHtml.Size = new System.Drawing.Size(1023, 479);
+            this.tbTemplateHtml.Size = new System.Drawing.Size(1011, 437);
             this.tbTemplateHtml.TabIndex = 3;
             this.tbTemplateHtml.Text = resources.GetString("tbTemplateHtml.Text");
             // 
@@ -285,7 +285,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(5, 5);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1023, 144);
+            this.panel2.Size = new System.Drawing.Size(1011, 144);
             this.panel2.TabIndex = 2;
             // 
             // label7
@@ -294,7 +294,7 @@
             this.label7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label7.Location = new System.Drawing.Point(0, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(143, 133);
+            this.label7.Size = new System.Drawing.Size(349, 322);
             this.label7.TabIndex = 0;
             this.label7.Text = "Variables available:\r\n\r\n%TITLE%\r\n%PAGE_HEADER%\r\n%CONTENT%\r\n%VERSION%\r\n%DATE_GENER" +
     "ATED%";
@@ -309,10 +309,10 @@
             this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.tbHeadingText);
             this.tabPage2.Controls.Add(this.tbIndexPageHtml);
-            this.tabPage2.Location = new System.Drawing.Point(4, 26);
+            this.tabPage2.Location = new System.Drawing.Point(10, 62);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1039, 639);
+            this.tabPage2.Size = new System.Drawing.Size(1027, 597);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Index page content";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -324,7 +324,7 @@
             this.label6.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.Location = new System.Drawing.Point(28, 49);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(113, 19);
+            this.label6.Size = new System.Drawing.Size(270, 46);
             this.label6.TabIndex = 7;
             this.label6.Text = "Page title suffix";
             // 
@@ -332,7 +332,7 @@
             // 
             this.tbPageTitlePrefix.Location = new System.Drawing.Point(156, 46);
             this.tbPageTitlePrefix.Name = "tbPageTitlePrefix";
-            this.tbPageTitlePrefix.Size = new System.Drawing.Size(763, 25);
+            this.tbPageTitlePrefix.Size = new System.Drawing.Size(763, 52);
             this.tbPageTitlePrefix.TabIndex = 6;
             this.tbPageTitlePrefix.Text = " - Endeavour FHIR Implementation Guide";
             // 
@@ -342,7 +342,7 @@
             this.label5.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(28, 117);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(127, 19);
+            this.label5.Size = new System.Drawing.Size(302, 46);
             this.label5.TabIndex = 5;
             this.label5.Text = "Index page HTML";
             // 
@@ -353,7 +353,7 @@
             this.label4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(28, 80);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(90, 19);
+            this.label4.Size = new System.Drawing.Size(217, 46);
             this.label4.TabIndex = 4;
             this.label4.Text = "Footing text";
             // 
@@ -362,7 +362,7 @@
             this.tbFootingText.Enabled = false;
             this.tbFootingText.Location = new System.Drawing.Point(156, 77);
             this.tbFootingText.Name = "tbFootingText";
-            this.tbFootingText.Size = new System.Drawing.Size(763, 25);
+            this.tbFootingText.Size = new System.Drawing.Size(763, 52);
             this.tbFootingText.TabIndex = 3;
             // 
             // label3
@@ -372,7 +372,7 @@
             this.label3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(28, 18);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(96, 19);
+            this.label3.Size = new System.Drawing.Size(227, 46);
             this.label3.TabIndex = 2;
             this.label3.Text = "Heading text";
             // 
@@ -380,7 +380,7 @@
             // 
             this.tbHeadingText.Location = new System.Drawing.Point(156, 15);
             this.tbHeadingText.Name = "tbHeadingText";
-            this.tbHeadingText.Size = new System.Drawing.Size(763, 25);
+            this.tbHeadingText.Size = new System.Drawing.Size(763, 52);
             this.tbHeadingText.TabIndex = 1;
             this.tbHeadingText.Text = "FHIR Implementation Guide (Draft)";
             // 
@@ -395,7 +395,7 @@
             // 
             // FhirProfilePublisherDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(18F, 45F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1047, 777);
             this.Controls.Add(this.tabControl1);
