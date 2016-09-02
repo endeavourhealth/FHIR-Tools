@@ -17,7 +17,7 @@ namespace FhirProfilePublisher.Engine
         {
         }
 
-        public string Generate(string[] inputFilePaths, string outputDirectory, TextContent textContent, bool showEverythingOnOnePage)
+        public string Generate(string[] inputFilePaths, string outputDirectory, TextContent textContent, bool showEverythingOnOnePage, bool showResourcesInW5Group, ResourceMaturity[] listOnlyResourcesWithMaturity)
         {
             if (inputFilePaths == null)
                 throw new ArgumentNullException("inputFilePaths");
@@ -42,10 +42,10 @@ namespace FhirProfilePublisher.Engine
             ResourceFileSet resourceFileSet = new ResourceFileSet();
             resourceFileSet.LoadXmlResourceFiles(inputFilePaths.Where(t => !string.IsNullOrWhiteSpace(t)).ToArray());
 
-            return GenerateHtml(resourceFileSet, outputPaths, textContent, showEverythingOnOnePage);
+            return GenerateHtml(resourceFileSet, outputPaths, textContent, showEverythingOnOnePage, showResourcesInW5Group, listOnlyResourcesWithMaturity);
         }
 
-        private string GenerateHtml(ResourceFileSet resourceFileSet, OutputPaths outputPaths, TextContent textContent, bool showEverythingOnOnePage)
+        private string GenerateHtml(ResourceFileSet resourceFileSet, OutputPaths outputPaths, TextContent textContent, bool showEverythingOnOnePage, bool showResourceInW5Group, ResourceMaturity[] listOnlyResourcesWithMaturity)
         {
             // copy supporting files
             Styles.WriteStylesToDisk(outputPaths);
@@ -62,15 +62,15 @@ namespace FhirProfilePublisher.Engine
 
             if (showEverythingOnOnePage)
             {
-                ResourceListingHtmlGenerator resourceListingGenerator = new ResourceListingHtmlGenerator(outputPaths);
-                resourceListingGenerator.GenerateSingleResourceListingPageWithPreamble("index.html", resourceFileSet, textContent.IndexPageHtml);
+                ResourceListingHtmlGenerator resourceListingGenerator = new ResourceListingHtmlGenerator(outputPaths, showResourceInW5Group, listOnlyResourcesWithMaturity);
+                resourceListingGenerator.GenerateSingleResourceListingPageWithIntroText("index.html", resourceFileSet, textContent.IndexPageHtml);
             }
             else
             {
-                ResourceListingHtmlGenerator resourceListingGenerator = new ResourceListingHtmlGenerator(outputPaths);
+                ResourceListingHtmlGenerator resourceListingGenerator = new ResourceListingHtmlGenerator(outputPaths, showResourceInW5Group, listOnlyResourcesWithMaturity);
                 resourceListingGenerator.GenerateStructureDefinitionListing("resources.html", resourceFileSet);
 
-                ResourceListingHtmlGenerator valueSetsListingGenerator = new ResourceListingHtmlGenerator(outputPaths);
+                ResourceListingHtmlGenerator valueSetsListingGenerator = new ResourceListingHtmlGenerator(outputPaths, showResourceInW5Group, listOnlyResourcesWithMaturity);
                 resourceListingGenerator.GenerateValueSetListing("valuesets.html", resourceFileSet);
 
                 GenericPageGenerator pageGenerator = new GenericPageGenerator(outputPaths);

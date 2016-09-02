@@ -12,18 +12,22 @@ namespace FhirProfilePublisher.Engine
     internal class ResourceListingHtmlGenerator
     {
         private OutputPaths _outputPaths;
+        private bool _showInW5Group;
+        private ResourceMaturity[] _listOnlyResourcesWithMaturity;
 
-        public ResourceListingHtmlGenerator(OutputPaths outputPaths)
+        public ResourceListingHtmlGenerator(OutputPaths outputPaths, bool showInW5Group, ResourceMaturity[] listOnlyResourcesWithMaturity)
         {
             _outputPaths = outputPaths;
+            _showInW5Group = showInW5Group;
+            _listOnlyResourcesWithMaturity = listOnlyResourcesWithMaturity;
         }
 
-        internal void GenerateSingleResourceListingPageWithPreamble(string fileName, ResourceFileSet resourceFileSet, string preambleHtml)
+        internal void GenerateSingleResourceListingPageWithIntroText(string fileName, ResourceFileSet resourceFileSet, string introText)
         {
             List<object> structureDefinitionListing = GetStructureDefinitionListing(resourceFileSet);
             XElement valuesetListing = GetValueSetListing(resourceFileSet);
 
-            structureDefinitionListing.Insert(0, XElement.Parse("<div>" + preambleHtml + "</div>"));
+            structureDefinitionListing.Insert(0, XElement.Parse("<div>" + introText + "</div>"));
             structureDefinitionListing.Insert(1, Html.H3("Resources"));
 
             structureDefinitionListing.AddRange(new object[]
@@ -47,21 +51,37 @@ namespace FhirProfilePublisher.Engine
         { 
             List<object> result = new List<object>();
 
-            foreach (string w5Group in resourceFileSet.StructureDefinitionsByW5Group.Keys.OrderBy(t => t))
+            if (_showInW5Group)
+            {
+                foreach (string w5Group in resourceFileSet.StructureDefinitionsByW5Group.Keys.OrderBy(t => t))
+                {
+                    StructureDefinitionFile[] structureDefinitionFiles = resourceFileSet
+                        .StructureDefinitionsByW5Group[w5Group]
+                        .Where(t => isInResourceMaturityList(t.Maturity))
+                        .OrderBy(t => t.Name)
+                        .ToArray();
+
+                    XElement groupItemList = GenerateItemList(structureDefinitionFiles);
+
+                    result.Add(Html.H4(w5Group));
+                    result.Add(groupItemList);
+                }
+            }
+            else
             {
                 StructureDefinitionFile[] structureDefinitionFiles = resourceFileSet
-                    .StructureDefinitionsByW5Group[w5Group]
+                    .StructureDefinitionFilesWithoutExtensions
+                    .Where(t => isInResourceMaturityList(t.Maturity))
                     .OrderBy(t => t.Name)
                     .ToArray();
 
-                XElement groupItemList = GenerateItemList(structureDefinitionFiles);
-
-                result.Add(Html.H4(w5Group));
-                result.Add(groupItemList);
+                XElement itemList = GenerateItemList(structureDefinitionFiles);
+                result.Add(itemList);
             }
             
             XElement extensionContent = GenerateItemList(resourceFileSet
                 .StructureDefinitionExtensionFiles
+                .Where(t => isInResourceMaturityList(t.Maturity))
                 .OrderBy(t => t.Name)
                 .ToArray());
 
@@ -75,9 +95,21 @@ namespace FhirProfilePublisher.Engine
             return result;
         }
 
+        private bool isInResourceMaturityList(ResourceMaturity resourceMaturity)
+        {
+            if (_listOnlyResourcesWithMaturity == null)
+                return true;
+
+            if (_listOnlyResourcesWithMaturity.Length == 0)
+                return true;
+
+            return _listOnlyResourcesWithMaturity.Contains(resourceMaturity);
+        }
+
         private XElement GetValueSetListing(ResourceFileSet resourceFileSet)
         {
             ValueSetFile[] items = resourceFileSet.ValueSetFiles
+                .Where(t => isInResourceMaturityList(t.Maturity))
                 .OrderBy(t => t.Name)
                 .ToArray();
 
