@@ -138,7 +138,7 @@ namespace FhirProfilePublisher.Engine
         {
             return new object[]
             {
-                "Maturity level: ",
+                ResourceMaturityHelper.GetMaturityLabel() + ": ",
                 Html.Img(_outputPaths.GetRelativePath(OutputFileType.Image, maturity.GetAssociatedIcon())),
                 " ",
                 maturity.GetDescription(),

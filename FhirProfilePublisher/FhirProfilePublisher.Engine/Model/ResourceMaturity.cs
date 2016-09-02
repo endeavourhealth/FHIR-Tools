@@ -22,6 +22,11 @@ namespace FhirProfilePublisher.Engine
 
     internal static class ResourceMaturityHelper
     {
+        public static string GetMaturityLabel()
+        {
+            return "Maturity";
+        }
+
         public static string GetDescription(this ResourceMaturity resourceMaturity)
         {
             return EnumHelper.GetEnumDescription(resourceMaturity);

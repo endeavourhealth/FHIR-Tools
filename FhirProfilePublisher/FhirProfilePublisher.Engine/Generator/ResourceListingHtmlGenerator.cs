@@ -84,7 +84,7 @@ namespace FhirProfilePublisher.Engine
                 Html.THead(new object[]
                 {
                     Html.Th(Styles.ResourceListingTableNameColumnClassName, "Name"),
-                    Html.Th(Styles.ResourceListingTableMaturityColumnClassName, GetMaturityColumnWithImage("Maturity", Images.IconBlank)),
+                    Html.Th(Styles.ResourceListingTableMaturityColumnClassName, GetMaturityColumnWithImage(ResourceMaturityHelper.GetMaturityLabel(), Images.IconBlank)),
                     Html.Th(Styles.ResourceListingTableIdentifierColumnClassName, "Identifier")
                 }),
                 Html.TBody
