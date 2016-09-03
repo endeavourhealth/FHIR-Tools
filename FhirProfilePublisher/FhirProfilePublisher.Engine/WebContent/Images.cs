@@ -98,7 +98,8 @@ namespace FhirProfilePublisher.Engine
                 case SDNodeType.PrimitiveType: return Images.IconPrimitive;
                 case SDNodeType.ComplexType: return Images.IconDatatype;
                 case SDNodeType.Reference: return Images.IconReference;
-                case SDNodeType.Extension: return Images.IconExtensionSimple;
+                case SDNodeType.SimpleExtension: return Images.IconExtensionSimple;
+                case SDNodeType.ComplexExtension: return Images.IconExtensionComplex;
                 case SDNodeType.SetupSlice: return Images.IconSlice;
                 case SDNodeType.Element: return Images.IconElement;
                 case SDNodeType.Choice: return Images.IconChoice;

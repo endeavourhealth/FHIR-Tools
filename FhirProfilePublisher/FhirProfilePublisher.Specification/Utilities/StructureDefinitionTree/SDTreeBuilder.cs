@@ -59,6 +59,9 @@ namespace FhirProfilePublisher.Specification
             // remove setup extension "setup" slice nodes
             rootNode.DepthFirstTreeWalk(t => RemoveExtensionSetupSlices(t));
 
+            // add extension definitions
+            rootNode.DepthFirstTreeWalk(t => AddExtensionDefinitions(t, resolver));
+
             return rootNode;
         }
 
@@ -78,7 +81,7 @@ namespace FhirProfilePublisher.Specification
             // sanity check #4 - elements have unique path values
             if (checkPathForUniqueness)
                 VerifyPathIsUnique(elements);
-                    
+
         }
 
         private void VerifyPathIsUnique(ElementDefinition[] elements)
@@ -161,7 +164,7 @@ namespace FhirProfilePublisher.Specification
                 dataTypeDefinition = multiLevelComplexTypeRevisit[node].ComplexDataTypeDefinition;
                 dataTypeRootElement = multiLevelComplexTypeRevisit[node].MultiLevelElementDefinition;
                 dataTypeChildElements = dataTypeDefinition.differential.element.GetChildren(dataTypeRootElement).ToArray();
-                
+
             }
             else  // else check whether is root of complex type
             {
@@ -383,6 +386,39 @@ namespace FhirProfilePublisher.Specification
             }
 
             return rootNode;
+        }
+
+        public void AddExtensionDefinitions(SDTreeNode treeNode, IStructureDefinitionResolver resolver)
+        {
+            if (!treeNode.GetNodeType().IsExtension())
+                return;
+
+            if (treeNode.Element == null)
+                return;
+
+            if (treeNode.Element.type == null)
+                return;
+
+            if (treeNode.Element.type.Length != 1)
+                return;
+
+            if (treeNode.Element.type.First().profile == null)
+                return;
+
+            if (treeNode.Element.type.First().profile.Length != 1)
+                return;
+
+            uri profileUri = treeNode.Element.type.First().profile.First();
+
+            if (profileUri == null)
+                return;
+
+            StructureDefinition structureDefinition = resolver.GetStructureDefinition(profileUri.value);
+
+            if (structureDefinition == null)
+                throw new Exception("Could not find extension " + profileUri.value);
+
+            treeNode.ExtensionDefinition = structureDefinition;
         }
     }
 }

@@ -13,9 +13,18 @@ namespace FhirProfilePublisher.Specification
         ComplexType,
         Element,
         Reference,
-        Extension,
+        SimpleExtension,
+        ComplexExtension,
         SetupSlice,
         Resource,
         Choice
+    }
+
+    public static class SDNodeTypeHelper
+    {
+        public static bool IsExtension(this SDNodeType value)
+        {
+            return ((value == SDNodeType.SimpleExtension) || (value == SDNodeType.ComplexExtension));
+        }
     }
 }

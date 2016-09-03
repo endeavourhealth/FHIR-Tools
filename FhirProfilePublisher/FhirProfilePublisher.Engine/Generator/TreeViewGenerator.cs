@@ -127,9 +127,16 @@ namespace FhirProfilePublisher.Engine
                     if (profileUri != null)
                     {
                         StructureDefinition structureDefinition = _resourceFileSet.GetStructureDefinition(profileUri.value);
-                        ElementDefinitionType[] elementDefinitionTypes = structureDefinition.GetSimpleExtensionType();
 
-                        return GetTypeTableCell(elementDefinitionTypes);
+                        if (structureDefinition.IsComplexExtension())
+                        {
+                            return Html.Td("(complex extension)");
+                        }
+                        else
+                        {
+                            ElementDefinitionType[] elementDefinitionTypes = structureDefinition.GetSimpleExtensionType();
+                            return GetTypeTableCell(elementDefinitionTypes);
+                        }
                     }
                     else
                     {

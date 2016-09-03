@@ -17,6 +17,7 @@ namespace FhirProfilePublisher.Specification
         public string Path { get; private set; }
         public ElementDefinition Element { get; private set; }
         public bool IsSlice { get; set; }
+        public StructureDefinition ExtensionDefinition { get; set; }
 
         public bool IsSetupSlice
         {
@@ -129,7 +130,7 @@ namespace FhirProfilePublisher.Specification
 
         public string GetDisplayName()
         {
-            if (GetNodeType() == SDNodeType.Extension)
+            if (GetNodeType().IsExtension())
             {
                 return Element.name.WhenNotNull(t => t.value);
             }
@@ -151,6 +152,10 @@ namespace FhirProfilePublisher.Specification
             if (IsSetupSlice)
                 return SDNodeType.SetupSlice;
 
+            if (Element.name != null)
+                if (!string.IsNullOrWhiteSpace(Element.name.value))
+                    Element = Element;
+
             if (Element.type != null)
             {
                 if (Element.type.Length == 0)
@@ -170,7 +175,13 @@ namespace FhirProfilePublisher.Specification
                     else if (elementType.IsComplexType())
                         return SDNodeType.ComplexType;
                     else if (elementType.IsExtension())
-                        return SDNodeType.Extension;
+                    {
+                        if (ExtensionDefinition != null)
+                            if (ExtensionDefinition.IsComplexExtension())
+                                return SDNodeType.ComplexExtension;
+
+                        return SDNodeType.SimpleExtension;
+                    }
                     else if (elementType.IsResource())
                         return SDNodeType.Resource;
 
@@ -188,7 +199,7 @@ namespace FhirProfilePublisher.Specification
             {
                 // hacky but apparently only way to determine extensions within extensions
 
-                return SDNodeType.Extension;
+                return SDNodeType.SimpleExtension;
             }
 
             return SDNodeType.Unknown;

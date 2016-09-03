@@ -14,6 +14,17 @@ namespace Hl7.Fhir.V102
             return (constrainedType.value.ToLower() == "extension");
         }
 
+        public bool IsComplexExtension()
+        {
+            if (!IsExtension())
+                return false;
+
+            if (GetSimpleExtensionType() != null)
+                return false;
+
+            return (differential.element.Count(t => t.path.value == "Extension.extension") > 1);
+        }
+
         public string GetTypeDescription()
         {
             if (IsExtension())
