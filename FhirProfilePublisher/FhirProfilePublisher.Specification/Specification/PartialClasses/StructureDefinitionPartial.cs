@@ -37,7 +37,10 @@ namespace Hl7.Fhir.V102
             if (!IsExtension())
                 throw new ArgumentException("Not an extension definition", "extensionDefinition");
 
-            ElementDefinition element = differential.element.FirstOrDefault(t => t.path.value == "Extension.value[x]");
+            ElementDefinition element = differential.element.FirstOrDefault(t => t.GetBasePath() == "Extension.value[x]");
+
+            if (element == null)
+                element = differential.element.FirstOrDefault(t => t.path.value == "Extension.value[x]");
 
             if (element == null)
                 return null;
