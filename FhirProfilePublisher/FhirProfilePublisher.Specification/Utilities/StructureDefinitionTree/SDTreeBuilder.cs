@@ -274,7 +274,10 @@ namespace FhirProfilePublisher.Specification
 
             foreach (ElementDefinition baseElement in baseSnapshotElements)
             {
-                ElementDefinition element = structure.differential.element.FirstOrDefault(t => t.path.value == baseElement.path.value);
+                ElementDefinition element = structure
+                    .differential
+                    .element
+                    .FirstOrDefault(t => t.GetBasePath() == baseElement.path.value);
 
                 if (element != null)
                     result.Add(element);

@@ -122,5 +122,15 @@ namespace Hl7.Fhir.V102
 
             return base.ToString();
         }
+
+        public string GetBasePath()
+        {
+            if (@base != null)
+                if (@base.path != null)
+                    if (!string.IsNullOrWhiteSpace(@base.path.value))
+                        return @base.path.value;
+
+            return path.value;
+        }
     }
 }
