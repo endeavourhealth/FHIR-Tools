@@ -141,59 +141,99 @@ namespace FhirProfilePublisher.Specification
                     node.Parent.RemoveChild(node);
         }
 
-        private static void AddMissingComplexDataTypeElements(SDTreeNode node)
+        private Dictionary<SDTreeNode, MultiLevelComplexTypePointer> multiLevelComplexTypeRevisit = new Dictionary<SDTreeNode, MultiLevelComplexTypePointer>();
+
+        internal class MultiLevelComplexTypePointer
         {
-            if (node.Element.type.WhenNotNull(t => t.Count()) == 1)
+            public StructureDefinition ComplexDataTypeDefinition { get; set; }
+            public ElementDefinition MultiLevelElementDefinition { get; set; }
+        }
+
+        private void AddMissingComplexDataTypeElements(SDTreeNode node)
+        {
+            StructureDefinition dataTypeDefinition;
+            ElementDefinition dataTypeRootElement;
+            ElementDefinition[] dataTypeChildElements;
+
+            // if is element in multi level complex type, recall context
+            if (multiLevelComplexTypeRevisit.ContainsKey(node))
             {
+                dataTypeDefinition = multiLevelComplexTypeRevisit[node].ComplexDataTypeDefinition;
+                dataTypeRootElement = multiLevelComplexTypeRevisit[node].MultiLevelElementDefinition;
+                dataTypeChildElements = dataTypeDefinition.differential.element.GetChildren(dataTypeRootElement).ToArray();
+                
+            }
+            else  // else check whether is root of complex type
+            {
+                if (node.Element.type.WhenNotNull(t => t.Count()) != 1)
+                    return;
+
                 ElementDefinitionType elementType = node.Element.type.First();
 
-                if (elementType.IsComplexType())
+
+                if (!elementType.IsComplexType())
+                    return;
+
+                dataTypeDefinition = FhirData.Instance.FindDataTypeStructureDefinition(elementType.TypeName);
+
+                if (dataTypeDefinition == null)
+                    throw new Exception("Could not find FHIR data type " + elementType.TypeName);
+
+                dataTypeRootElement = dataTypeDefinition.differential.element.GetRootElement();
+                dataTypeChildElements = dataTypeDefinition.differential.element.GetChildren(dataTypeRootElement).ToArray();
+            }
+
+            List<SDTreeNode> newChildren = new List<SDTreeNode>();
+
+            foreach (ElementDefinition dataTypeChildElement in dataTypeChildElements)
+            {
+                string lastPathElement = dataTypeChildElement.path.value.Substring(dataTypeRootElement.path.value.Length + 1);
+
+                SDTreeNode existingChild = node.Children.FirstOrDefault(t => t.LastPathElement == lastPathElement);
+                SDTreeNode newChild = null;
+
+                // if the data type's child element exists in the profile
+                if (existingChild != null)
                 {
-                    StructureDefinition dataTypeDefinition = FhirData.Instance.FindDataTypeStructureDefinition(elementType.TypeName);
-
-                    ElementDefinition dataTypeRootElement = dataTypeDefinition.differential.element.GetRootElement();
-                    ElementDefinition[] dataTypeElements = dataTypeDefinition.differential.element.GetChildren(dataTypeRootElement).ToArray();
-
-                    List<SDTreeNode> newChildren = new List<SDTreeNode>();
-
-                    foreach (ElementDefinition dataTypeElement in dataTypeElements)
+                    // and is not a "fake" element
+                    if (!existingChild.Element.IsFake)
                     {
-                        string lastPathElement = dataTypeElement.path.value.Substring(dataTypeRootElement.path.value.Length + 1);
-
-                        SDTreeNode existingChild = node.Children.FirstOrDefault(t => t.LastPathElement == lastPathElement);
-
-                        if (existingChild != null)
-                        {
-                            if (!existingChild.Element.IsFake)
-                            {
-                                newChildren.Add(existingChild);
-                            }
-                            else
-                            {
-                                SDTreeNode fakeReplacement = new SDTreeNode(dataTypeElement);
-                                SDTreeNode[] childsChildren = existingChild.Children;
-                                existingChild.RemoveAllChildren();
-                                fakeReplacement.AddChildren(childsChildren);
-                                newChildren.Add(fakeReplacement);
-                            }
-                        }
-                        else
-                        {
-                            newChildren.Add(new SDTreeNode(dataTypeElement));
-                        }
-
-
+                        newChildren.Add(existingChild);
                     }
+                    else  // is a "fake" element
+                    {
+                        newChild = new SDTreeNode(dataTypeChildElement);
+                        SDTreeNode[] childsChildren = existingChild.Children;
+                        existingChild.RemoveAllChildren();
+                        newChild.AddChildren(childsChildren);
+                        newChildren.Add(newChild);
+                    }
+                }
+                else  // if the data type's child element doesn't exist in the profile
+                {
+                    newChild = new SDTreeNode(dataTypeChildElement);
+                    newChildren.Add(newChild);
+                }
 
-                    foreach (SDTreeNode childNode in node.Children)
-                        if (newChildren.All(t => t.LastPathElement != childNode.LastPathElement))
-                            newChildren.Add(childNode);
+                // if complex data type's children have children....argh!  (should only be for the Timing data type)
+                if (dataTypeDefinition.differential.element.GetChildren(dataTypeChildElement).Count() > 0)
+                {
+                    MultiLevelComplexTypePointer multiLevelComplexTypePointer = new MultiLevelComplexTypePointer()
+                    {
+                        ComplexDataTypeDefinition = dataTypeDefinition,
+                        MultiLevelElementDefinition = dataTypeChildElement
+                    };
 
-                    node.RemoveAllChildren();
-                    node.AddChildren(newChildren.ToArray());
-
+                    multiLevelComplexTypeRevisit.Add(newChild ?? existingChild, multiLevelComplexTypePointer);
                 }
             }
+
+            foreach (SDTreeNode childNode in node.Children)
+                if (newChildren.All(t => t.LastPathElement != childNode.LastPathElement))
+                    newChildren.Add(childNode);
+
+            node.RemoveAllChildren();
+            node.AddChildren(newChildren.ToArray());
         }
 
         private static void GroupSlices(SDTreeNode node)
