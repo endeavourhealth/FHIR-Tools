@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FhirProfilePublisher.Engine
 {
-    internal enum ResourceMaturity : int
+    public enum ResourceMaturity : int
     {
         [Description("Initial development")]
         InitialDevelopment = 0,

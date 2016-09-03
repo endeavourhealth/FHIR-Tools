@@ -9,19 +9,8 @@ namespace Hl7.Fhir.V102
 {
     public partial class ElementDefinition
     {
-        private bool _isFake = false;
-
-        internal bool IsFake
-        {
-            get
-            {
-                return _isFake;
-            }
-            set
-            {
-                _isFake = value;
-            }
-        }
+        internal string PathBeforeSliceIndexing { get; set; }
+        internal bool IsFake { get; set; } = false;
 
         public string GetValueSetUri()
         {

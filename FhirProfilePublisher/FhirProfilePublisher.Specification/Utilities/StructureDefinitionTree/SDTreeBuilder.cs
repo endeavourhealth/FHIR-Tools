@@ -250,6 +250,7 @@ namespace FhirProfilePublisher.Specification
                             if (sliceCount == 0)
                                 throw new Exception("Found slice child element before slice root element");
 
+                            element.PathBeforeSliceIndexing = element.path.value;
                             element.path.value = slicePath + "#" + sliceCount.ToString() + path.Substring(slicePath.Length);
                         }
                     }

@@ -184,6 +184,12 @@ namespace FhirProfilePublisher.Specification
                     return SDNodeType.Choice;
                 }
             }
+            else if ((Element.PathBeforeSliceIndexing ?? string.Empty).EndsWith(".extension"))
+            {
+                // hacky but apparently only way to determine extensions within extensions
+
+                return SDNodeType.Extension;
+            }
 
             return SDNodeType.Unknown;
         }
