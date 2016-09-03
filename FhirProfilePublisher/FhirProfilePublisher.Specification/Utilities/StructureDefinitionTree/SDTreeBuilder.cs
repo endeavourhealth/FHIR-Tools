@@ -174,6 +174,10 @@ namespace FhirProfilePublisher.Specification
                 if (!elementType.IsComplexType())
                     return;
 
+                // don't expand root Extension elements
+                if ((node.Path == "Extension") && (elementType.TypeName == "Element"))
+                    return;
+
                 dataTypeDefinition = FhirData.Instance.FindDataTypeStructureDefinition(elementType.TypeName);
 
                 if (dataTypeDefinition == null)
