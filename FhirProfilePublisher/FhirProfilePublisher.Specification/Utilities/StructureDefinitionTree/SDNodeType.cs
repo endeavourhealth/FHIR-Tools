@@ -17,7 +17,8 @@ namespace FhirProfilePublisher.Specification
         ComplexExtension,
         SetupSlice,
         Resource,
-        Choice
+        Choice,
+        ReferenceToAnotherElement
     }
 
     public static class SDNodeTypeHelper

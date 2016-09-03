@@ -152,10 +152,6 @@ namespace FhirProfilePublisher.Specification
             if (IsSetupSlice)
                 return SDNodeType.SetupSlice;
 
-            if (Element.name != null)
-                if (!string.IsNullOrWhiteSpace(Element.name.value))
-                    Element = Element;
-
             if (Element.type != null)
             {
                 if (Element.type.Length == 0)
@@ -200,6 +196,10 @@ namespace FhirProfilePublisher.Specification
                 // hacky but apparently only way to determine extensions within extensions
 
                 return SDNodeType.SimpleExtension;
+            }
+            else if (Element.nameReference != null)
+            {
+                return SDNodeType.ReferenceToAnotherElement;
             }
 
             return SDNodeType.Unknown;

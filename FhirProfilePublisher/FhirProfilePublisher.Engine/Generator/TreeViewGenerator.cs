@@ -74,7 +74,7 @@ namespace FhirProfilePublisher.Engine
             {
                 GetNameAndImagesTableCell(treeNode),
                 Html.Td(currentElement.GetCardinalityText()),
-                GetTypeTableCell(treeNode.Element.WhenNotNull(t => t.type)),
+                GetTypeTableCell(treeNode.Element.WhenNotNull(t => t.type), treeNode),
                 GetDescriptionTableCell(currentElement)
             };
 
@@ -101,12 +101,19 @@ namespace FhirProfilePublisher.Engine
             return td;
         }
 
-        private XElement GetTypeTableCell(ElementDefinitionType[] types)
+        private XElement GetTypeTableCell(ElementDefinitionType[] types, SDTreeNode associatedTreeNode = null)
         {
             string result = string.Empty;
 
             if (types == null)
+            {
+                if (associatedTreeNode != null)
+                    if (associatedTreeNode.Element.nameReference != null)
+                        if (!string.IsNullOrWhiteSpace(associatedTreeNode.Element.nameReference.value))
+                            return Html.Td("(see element " + associatedTreeNode.Element.nameReference.value + ")");
+
                 return Html.Td(string.Empty);
+            }
 
             if (types.Length == 0)
             {

@@ -103,6 +103,7 @@ namespace FhirProfilePublisher.Engine
                 case SDNodeType.SetupSlice: return Images.IconSlice;
                 case SDNodeType.Element: return Images.IconElement;
                 case SDNodeType.Choice: return Images.IconChoice;
+                case SDNodeType.ReferenceToAnotherElement: return Images.IconReuse;
                 case SDNodeType.Unknown: return Images.IconBlank;
                 default: throw new NotSupportedException("SDNodeType");
             }
