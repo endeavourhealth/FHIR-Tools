@@ -62,6 +62,9 @@ namespace FhirProfilePublisher.Specification
             // add extension definitions
             rootNode.DepthFirstTreeWalk(t => AddExtensionDefinitions(t, resolver));
 
+            // group children of slice parent not part of numbered slice
+            rootNode.DepthFirstTreeWalk(t => GroupOpenSliceElements(t));
+
             return rootNode;
         }
 
@@ -172,7 +175,6 @@ namespace FhirProfilePublisher.Specification
                     return;
 
                 ElementDefinitionType elementType = node.Element.type.First();
-
 
                 if (!elementType.IsComplexType())
                     return;
@@ -419,6 +421,50 @@ namespace FhirProfilePublisher.Specification
                 throw new Exception("Could not find extension " + profileUri.value);
 
             treeNode.ExtensionDefinition = structureDefinition;
+        }
+
+        private void GroupOpenSliceElements(SDTreeNode node)
+        {
+            if (node.IsSetupSlice && (!node.IsSetupSliceForExtension))
+            {
+                List<SDTreeNode> nodesToGroup = new List<SDTreeNode>();
+
+                foreach (SDTreeNode childNode in node.Children)
+                    if (!childNode.IsSlice)
+                        nodesToGroup.Add(childNode);
+
+                if (node.Element.slicing.rules.value == SlicingRuleslist.open)
+                {
+                    ElementDefinition openSliceElement = new ElementDefinition();
+                    openSliceElement.path = new @string();
+                    openSliceElement.path.value = node.Element.path.value + "#n";
+                    openSliceElement.name = new @string();
+                    // openSliceElement.name.value = "open";
+                    // also fix cardinalities
+                    openSliceElement.type = node.Element.type;
+                    SDTreeNode openSlice = new SDTreeNode(openSliceElement);
+                    openSlice.AddChildren(nodesToGroup.ToArray());
+                    node.AddChild(openSlice);
+                }
+                else if (node.Element.slicing.rules.value == SlicingRuleslist.openAtEnd)
+                {
+                    ElementDefinition openAtEndSliceElement = new ElementDefinition();
+                    openAtEndSliceElement.path = new @string();
+                    openAtEndSliceElement.path.value = node.Element.path.value + "#n";
+                    openAtEndSliceElement.name = new @string();
+                    // openAtEndSliceElement.name.value = "openAtEnd";
+                    // also fix cardinalities
+                    openAtEndSliceElement.type = node.Element.type;
+                    SDTreeNode openAtEndSlice = new SDTreeNode(openAtEndSliceElement);
+                    openAtEndSlice.AddChildren(nodesToGroup.ToArray());
+                    node.AddChild(openAtEndSlice);
+                }
+                else
+                {
+                    foreach (SDTreeNode childNodeToRemove in nodesToGroup)
+                        node.RemoveChild(childNodeToRemove);
+                }
+            }
         }
     }
 }

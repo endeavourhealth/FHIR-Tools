@@ -70,6 +70,9 @@ namespace FhirProfilePublisher.Specification
 
         public void AddChild(SDTreeNode child)
         {
+            if (child.Parent != null)
+                child.Parent.RemoveChild(child);
+
             _children.Add(child);
             child.Parent = this;
         }
