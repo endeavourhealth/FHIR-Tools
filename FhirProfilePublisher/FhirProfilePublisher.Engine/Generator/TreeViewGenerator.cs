@@ -20,10 +20,18 @@ namespace FhirProfilePublisher.Engine
             _outputPaths = outputPaths;
         }
 
-        public XElement Generate(StructureDefinition structureDefinition)
+        public XElement GenerateSnapshot(StructureDefinition structureDefinition)
         {
             SDTreeBuilder builder = new SDTreeBuilder();
-            SDTreeNode rootNode = builder.GenerateTree(structureDefinition, _resourceFileSet, false);
+            SDTreeNode rootNode = builder.GenerateSnapshotTree(structureDefinition, _resourceFileSet, false);
+
+            return GenerateHtml(rootNode);
+        }
+
+        public XElement GenerateDifferential(StructureDefinition structureDefinition)
+        {
+            SDTreeBuilder builder = new SDTreeBuilder();
+            SDTreeNode rootNode = builder.GenerateDifferentialTree(structureDefinition, _resourceFileSet, true);
 
             return GenerateHtml(rootNode);
         }

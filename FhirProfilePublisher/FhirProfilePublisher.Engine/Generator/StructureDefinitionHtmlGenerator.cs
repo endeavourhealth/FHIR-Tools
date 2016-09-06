@@ -111,13 +111,13 @@ namespace FhirProfilePublisher.Engine
         private XElement GenerateSnapshotTab(StructureDefinition structureDefinition)
         {
             TreeViewGenerator treeViewGenerator = new TreeViewGenerator(_resourceFileSet, _outputPaths);
-            return treeViewGenerator.Generate(structureDefinition);
+            return treeViewGenerator.GenerateSnapshot(structureDefinition);
         }
 
         private XElement GenerateDifferentialTab(StructureDefinition structureDefinition)
         {
             TreeViewGenerator treeViewGenerator = new TreeViewGenerator(_resourceFileSet, _outputPaths);
-            return treeViewGenerator.Generate(structureDefinition);
+            return treeViewGenerator.GenerateDifferential(structureDefinition);
         }
 
         private XElement GenerateSchemasTab(StructureDefinitionFile structureDefinitionFile)
