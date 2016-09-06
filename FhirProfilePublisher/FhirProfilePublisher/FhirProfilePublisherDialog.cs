@@ -110,7 +110,7 @@ namespace FhirProfilePublisher
                 this.Enabled = false;
                 this.Refresh();
 
-                TextContent content = new TextContent()
+                OutputOptions options = new OutputOptions()
                 {
                     HeaderText = tbHeadingText.Text,
                     PageTitleSuffix = tbPageTitlePrefix.Text,
@@ -120,7 +120,7 @@ namespace FhirProfilePublisher
                 };
 
                 HtmlGenerator generator = new HtmlGenerator();
-                string htmlFilePath = generator.Generate(tbFileList.Lines, tbOutputPath.Text, content, true, true, null); //false, new ResourceMaturity[] { ResourceMaturity.Draft });
+                string htmlFilePath = generator.Generate(tbFileList.Lines, tbOutputPath.Text, options);
 
                 if (cbOpenBrowser.Checked)
                     WebHelper.LaunchBrowser(htmlFilePath);

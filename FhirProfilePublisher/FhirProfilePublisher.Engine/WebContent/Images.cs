@@ -17,6 +17,7 @@ namespace FhirProfilePublisher.Engine
         public static readonly string ImagesResourceLocation = typeof(Images).Assembly.GetName().Name + ".WebContent.Images.";
 
         public const string EndeavourLogo = "endeavourlogo.png";
+        public const string InteropenLogo = "interopenlogo.png";
         public const string FhirLogo = "fhirlogo.png";
         public const string IconChoice = "icon_choice.gif";
         public const string IconDatatype = "icon_datatype.gif";

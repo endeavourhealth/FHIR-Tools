@@ -57,7 +57,7 @@
     <Compile Include="Generator\TreeViewGenerator.cs" />
     <Compile Include="Model\ResourceMaturity.cs" />
     <Compile Include="Utilities\BootstrapHtml.cs" />
-    <Compile Include="Model\TextContent.cs" />
+    <Compile Include="Model\OutputConfiguration.cs" />
     <Compile Include="Model\ResourceFileSet.cs" />
     <Compile Include="Model\Link.cs" />
     <Compile Include="Model\OutputFileType.cs" />
@@ -117,6 +117,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="WebContent\Images\interopenlogo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -5,9 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Hl7.Fhir.V102;
-using System.Xml;
-using System.Xml.Linq;
 
 namespace FhirProfilePublisher.Engine
 {
@@ -17,7 +14,7 @@ namespace FhirProfilePublisher.Engine
         {
         }
 
-        public string Generate(string[] inputFilePaths, string outputDirectory, TextContent textContent, bool showEverythingOnOnePage, bool showResourcesInW5Group, ResourceMaturity[] listOnlyResourcesWithMaturity)
+        public string Generate(string[] inputFilePaths, string outputDirectory, OutputOptions outputOptions)
         {
             if (inputFilePaths == null)
                 throw new ArgumentNullException("inputFilePaths");
@@ -35,17 +32,17 @@ namespace FhirProfilePublisher.Engine
                 valueSetPath: "ValueSet"
             );
 
-            Pages.Instance.PageHeader = textContent.HeaderText;
-            Pages.Instance.PageTitleSuffix = textContent.PageTitleSuffix;
-            Pages.Instance.TemplatePage = textContent.PageTemplate;
+            Pages.Instance.PageHeader = outputOptions.HeaderText;
+            Pages.Instance.PageTitleSuffix = outputOptions.PageTitleSuffix;
+            Pages.Instance.TemplatePage = outputOptions.PageTemplate;
 
             ResourceFileSet resourceFileSet = new ResourceFileSet();
             resourceFileSet.LoadXmlResourceFiles(inputFilePaths.Where(t => !string.IsNullOrWhiteSpace(t)).ToArray());
 
-            return GenerateHtml(resourceFileSet, outputPaths, textContent, showEverythingOnOnePage, showResourcesInW5Group, listOnlyResourcesWithMaturity);
+            return GenerateHtml(resourceFileSet, outputPaths, outputOptions);
         }
 
-        private string GenerateHtml(ResourceFileSet resourceFileSet, OutputPaths outputPaths, TextContent textContent, bool showEverythingOnOnePage, bool showResourceInW5Group, ResourceMaturity[] listOnlyResourcesWithMaturity)
+        private string GenerateHtml(ResourceFileSet resourceFileSet, OutputPaths outputPaths, OutputOptions outputOptions)
         {
             // copy supporting files
             Styles.WriteStylesToDisk(outputPaths);
@@ -60,21 +57,21 @@ namespace FhirProfilePublisher.Engine
             ValueSetHtmlGenerator valuesetGenerator = new ValueSetHtmlGenerator(resourceFileSet, outputPaths);
             valuesetGenerator.GenerateAll();
 
-            if (showEverythingOnOnePage)
+            if (outputOptions.ShowEverythingOnOnePage)
             {
-                ResourceListingHtmlGenerator resourceListingGenerator = new ResourceListingHtmlGenerator(outputPaths, showResourceInW5Group, listOnlyResourcesWithMaturity);
-                resourceListingGenerator.GenerateSingleResourceListingPageWithIntroText("index.html", resourceFileSet, textContent.IndexPageHtml);
+                ResourceListingHtmlGenerator resourceListingGenerator = new ResourceListingHtmlGenerator(outputPaths, outputOptions);
+                resourceListingGenerator.GenerateSingleResourceListingPageWithIntroText("index.html", resourceFileSet, outputOptions.IndexPageHtml);
             }
             else
             {
-                ResourceListingHtmlGenerator resourceListingGenerator = new ResourceListingHtmlGenerator(outputPaths, showResourceInW5Group, listOnlyResourcesWithMaturity);
+                ResourceListingHtmlGenerator resourceListingGenerator = new ResourceListingHtmlGenerator(outputPaths, outputOptions);
                 resourceListingGenerator.GenerateStructureDefinitionListing("resources.html", resourceFileSet);
 
-                ResourceListingHtmlGenerator valueSetsListingGenerator = new ResourceListingHtmlGenerator(outputPaths, showResourceInW5Group, listOnlyResourcesWithMaturity);
+                ResourceListingHtmlGenerator valueSetsListingGenerator = new ResourceListingHtmlGenerator(outputPaths, outputOptions);
                 resourceListingGenerator.GenerateValueSetListing("valuesets.html", resourceFileSet);
 
                 GenericPageGenerator pageGenerator = new GenericPageGenerator(outputPaths);
-                pageGenerator.Generate("index.html", "Overview", textContent.IndexPageHtml);
+                pageGenerator.Generate("index.html", "Overview", outputOptions.IndexPageHtml);
 
                 pageGenerator.Generate("api.html", "API", GetApiPageContent());
             }

@@ -12,14 +12,12 @@ namespace FhirProfilePublisher.Engine
     internal class ResourceListingHtmlGenerator
     {
         private OutputPaths _outputPaths;
-        private bool _showInW5Group;
-        private ResourceMaturity[] _listOnlyResourcesWithMaturity;
+        private OutputOptions _outputOptions;
 
-        public ResourceListingHtmlGenerator(OutputPaths outputPaths, bool showInW5Group, ResourceMaturity[] listOnlyResourcesWithMaturity)
+        public ResourceListingHtmlGenerator(OutputPaths outputPaths, OutputOptions outputOptions)
         {
             _outputPaths = outputPaths;
-            _showInW5Group = showInW5Group;
-            _listOnlyResourcesWithMaturity = listOnlyResourcesWithMaturity;
+            _outputOptions = outputOptions;
         }
 
         internal void GenerateSingleResourceListingPageWithIntroText(string fileName, ResourceFileSet resourceFileSet, string introText)
@@ -51,7 +49,7 @@ namespace FhirProfilePublisher.Engine
         { 
             List<object> result = new List<object>();
 
-            if (_showInW5Group)
+            if (_outputOptions.ShowResourcesInW5Group)
             {
                 foreach (string w5Group in resourceFileSet.StructureDefinitionsByW5Group.Keys.OrderBy(t => t))
                 {
@@ -97,13 +95,13 @@ namespace FhirProfilePublisher.Engine
 
         private bool isInResourceMaturityList(ResourceMaturity resourceMaturity)
         {
-            if (_listOnlyResourcesWithMaturity == null)
+            if (_outputOptions.ListOnlyResourcesWithMaturity == null)
                 return true;
 
-            if (_listOnlyResourcesWithMaturity.Length == 0)
+            if (_outputOptions.ListOnlyResourcesWithMaturity.Length == 0)
                 return true;
 
-            return _listOnlyResourcesWithMaturity.Contains(resourceMaturity);
+            return _outputOptions.ListOnlyResourcesWithMaturity.Contains(resourceMaturity);
         }
 
         private XElement GetValueSetListing(ResourceFileSet resourceFileSet)
