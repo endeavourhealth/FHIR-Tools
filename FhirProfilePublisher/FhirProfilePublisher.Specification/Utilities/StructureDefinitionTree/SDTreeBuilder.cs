@@ -13,6 +13,9 @@ namespace FhirProfilePublisher.Specification
 
         public SDTreeNode GenerateTree(StructureDefinition structureDefinition, IStructureDefinitionResolver resolver, bool includeNodesWithZeroMaxCardinality = true)
         {
+            // take a copy as we will modify below
+            structureDefinition = XmlHelper.DeepClone(structureDefinition);
+
             // process ElementDefinition list
             //
             // to create list where path values are unique (by indexing slices)

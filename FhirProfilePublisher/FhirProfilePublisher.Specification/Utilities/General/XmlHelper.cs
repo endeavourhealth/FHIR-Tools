@@ -32,6 +32,11 @@ namespace FhirProfilePublisher.Specification
             }
         }
 
+        public static T DeepClone<T>(T item) where T : new()
+        {
+            return Deserialize<T>(Serialize(item));
+        }
+
         public static string FormatXml(string xml)
         {
             try

@@ -99,22 +99,25 @@ namespace FhirProfilePublisher.Engine
 
         private XElement GetTabbedContentView(StructureDefinitionFile structureDefinitionFile)
         {
-            StructureDefinition definition = structureDefinitionFile.StructureDefinition;
-
             return BootstrapHtml.GetTabs(new Dictionary<string, object>()
             {
-                { "Structure", GenerateStructureTab(definition) },
-                { "XML", "Content" },
-                { "JSON", "Content" },
-                { "Examples", "Content" },
+                { "Snapshot", GenerateSnapshotTab(structureDefinitionFile.StructureDefinition) },
+                { "Differential", GenerateDifferentialTab(structureDefinitionFile.StructureDefinition) },
+                { "Examples", "" },
                 { "Schemas", GenerateSchemasTab(structureDefinitionFile) }
             });
         }
 
-        private XElement GenerateStructureTab(StructureDefinition definition)
+        private XElement GenerateSnapshotTab(StructureDefinition structureDefinition)
         {
             TreeViewGenerator treeViewGenerator = new TreeViewGenerator(_resourceFileSet, _outputPaths);
-            return treeViewGenerator.Generate(definition);
+            return treeViewGenerator.Generate(structureDefinition);
+        }
+
+        private XElement GenerateDifferentialTab(StructureDefinition structureDefinition)
+        {
+            TreeViewGenerator treeViewGenerator = new TreeViewGenerator(_resourceFileSet, _outputPaths);
+            return treeViewGenerator.Generate(structureDefinition);
         }
 
         private XElement GenerateSchemasTab(StructureDefinitionFile structureDefinitionFile)
