@@ -11,6 +11,7 @@ namespace Hl7.Fhir.V102
     {
         internal string PathBeforeSliceIndexing { get; set; }
         internal bool IsFake { get; set; } = false;
+        internal bool HasChangedFromBase { get; set; } = false;
 
         public string GetValueSetUri()
         {

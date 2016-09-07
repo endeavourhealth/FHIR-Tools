@@ -19,6 +19,29 @@ namespace FhirProfilePublisher.Specification
         public bool IsSlice { get; set; }
         public StructureDefinition ExtensionDefinition { get; set; }
 
+        public bool HasChangedFromBase
+        {
+            get
+            {
+                return Element.HasChangedFromBase;
+            }
+        }
+
+        public bool ThisOrChildrenHaveChangedFromBase
+        {
+            get
+            {
+                if (HasChangedFromBase)
+                    return true;
+
+                foreach (SDTreeNode child in _children)
+                    if (child.ThisOrChildrenHaveChangedFromBase)
+                        return true;
+
+                return false; 
+            }
+        }
+
         public bool IsSetupSlice
         {
             get

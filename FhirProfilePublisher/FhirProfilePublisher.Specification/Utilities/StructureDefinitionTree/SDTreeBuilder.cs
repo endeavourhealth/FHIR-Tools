@@ -11,52 +11,20 @@ namespace FhirProfilePublisher.Specification
         {
         }
 
-        public SDTreeNode GenerateDifferentialTree(StructureDefinition structureDefinition, IStructureDefinitionResolver resolver, bool includeNodesWithZeroMaxCardinality = true)
+        public SDTreeNode GenerateDifferentialTree(StructureDefinition structureDefinition, IStructureDefinitionResolver resolver)
         {
-            // take a copy as we will modify below
-            structureDefinition = XmlHelper.DeepClone(structureDefinition);
+            SDTreeNode snapshotTree = GenerateSnapshotTree(structureDefinition, resolver, true);
 
-            // normalise element list
-            //
-            //
+            snapshotTree.DepthFirstTreeWalk(t => RemoveUnchangedNodes(t));
 
-            // process ElementDefinition list
-            //
-            // to create list where path values are unique (by indexing slices)
-            // and where there are no orphan children by creating fake parents
-            //
+            return snapshotTree;
+        }
 
-            ElementDefinition[] elements = structureDefinition.differential.element;
-
-            // sanity checks
-            PerformDifferentialElementsSanityCheck(elements, false);
-
-            // "index" slices to create unique ElementDefinition.path values
-            IndexSlices(elements);
-
-            // Add fake missing parents
-            elements = AddFakeMissingParents(elements);
-
-            // build tree
-            //
-            //
-
-            SDTreeNode rootNode = GenerateTree(elements);
-
-            // process tree
-            //
-            //
-
-            // group slices under the slice "setup" node (except extension slices)
-            rootNode.DepthFirstTreeWalk(t => GroupSlices(t));
-
-            // group children of slice parent not part of numbered slice
-            rootNode.DepthFirstTreeWalk(t => GroupOpenSliceElements(t));
-
-            // remove setup extension "setup" slice nodes
-            rootNode.DepthFirstTreeWalk(t => RemoveExtensionSetupSlices(t));
-
-            return rootNode;
+        private void RemoveUnchangedNodes(SDTreeNode node)
+        {
+            if (!node.ThisOrChildrenHaveChangedFromBase)
+                if (node.Parent != null)
+                    node.Parent.RemoveChild(node);
         }
 
         public SDTreeNode GenerateSnapshotTree(StructureDefinition structureDefinition, IStructureDefinitionResolver resolver, bool includeNodesWithZeroMaxCardinality = true)
@@ -64,10 +32,6 @@ namespace FhirProfilePublisher.Specification
             // take a copy as we will modify below
             structureDefinition = XmlHelper.DeepClone(structureDefinition);
 
-            // normalise element list
-            //
-            //
-
             // process ElementDefinition list
             //
             // to create list where path values are unique (by indexing slices)
@@ -75,6 +39,10 @@ namespace FhirProfilePublisher.Specification
             //
 
             ElementDefinition[] elements = structureDefinition.differential.element;
+
+            // mark elements as changed
+            foreach (ElementDefinition element in elements)
+                element.HasChangedFromBase = true;
 
             // sanity checks
             PerformDifferentialElementsSanityCheck(elements, false);

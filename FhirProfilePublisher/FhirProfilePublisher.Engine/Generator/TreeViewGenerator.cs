@@ -31,7 +31,7 @@ namespace FhirProfilePublisher.Engine
         public XElement GenerateDifferential(StructureDefinition structureDefinition)
         {
             SDTreeBuilder builder = new SDTreeBuilder();
-            SDTreeNode rootNode = builder.GenerateDifferentialTree(structureDefinition, _resourceFileSet, true);
+            SDTreeNode rootNode = builder.GenerateDifferentialTree(structureDefinition, _resourceFileSet);
 
             return GenerateHtml(rootNode);
         }
