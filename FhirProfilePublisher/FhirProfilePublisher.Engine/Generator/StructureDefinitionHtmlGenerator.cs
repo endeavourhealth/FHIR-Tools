@@ -124,18 +124,8 @@ namespace FhirProfilePublisher.Engine
         {
             return GetList(new object[]
             {
-                Html.P(Html.A("#", "XML Schema")),
-                Html.P(Html.A("#", " Schematron")),
-                Html.P(Html.A("#", "JSON schema")),
-                Html.P(new object[] 
-                { 
-                    "Resource profile",
-                    GetList(new object[]
-                    {
-                        Html.P(Html.A(_outputPaths.GetRelativePath(OutputFileType.StructureDefinition, structureDefinitionFile.OutputXmlFilename), "In XML")),
-                        Html.P(Html.A(_outputPaths.GetRelativePath(OutputFileType.StructureDefinition, structureDefinitionFile.OutputJsonFilename), "In JSON"))
-                    })
-                })
+                Html.P(Html.A(_outputPaths.GetRelativePath(OutputFileType.StructureDefinition, structureDefinitionFile.OutputXmlFilename), "StructureDefinition XML")),
+                Html.P(Html.A(_outputPaths.GetRelativePath(OutputFileType.StructureDefinition, structureDefinitionFile.OutputJsonFilename), "StructureDefinition JSON"))
             });
         }
 
