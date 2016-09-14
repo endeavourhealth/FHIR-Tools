@@ -122,19 +122,19 @@ namespace FhirProfilePublisher.Engine
 
         private XElement GenerateSchemasTab(StructureDefinitionFile structureDefinitionFile)
         {
-            return GetList(new object[]
+            return GetSchemasList(new object[]
             {
-                Html.P(Html.A(_outputPaths.GetRelativePath(OutputFileType.StructureDefinition, structureDefinitionFile.OutputXmlFilename), "StructureDefinition XML")),
-                Html.P(Html.A(_outputPaths.GetRelativePath(OutputFileType.StructureDefinition, structureDefinitionFile.OutputJsonFilename), "StructureDefinition JSON"))
+                Html.A(_outputPaths.GetRelativePath(OutputFileType.StructureDefinition, structureDefinitionFile.OutputXmlFilename), "StructureDefinition XML"),
+                Html.A(_outputPaths.GetRelativePath(OutputFileType.StructureDefinition, structureDefinitionFile.OutputJsonFilename), "StructureDefinition JSON")
             });
         }
 
-        private XElement GetList(object[] list)
+        internal static XElement GetSchemasList(object[] list)
         {
             return Html.Ul(new object[]
             {
-                Html.Class(Styles.StarListClassName),
-                list.Select(t => Html.Li(t)).ToArray()
+                Html.Class(Styles.StarListClassName + " " + Styles.SchemasListClassName),
+                list.Select(t => Html.Li(Html.P(t))).ToArray()
             });
         }
     }

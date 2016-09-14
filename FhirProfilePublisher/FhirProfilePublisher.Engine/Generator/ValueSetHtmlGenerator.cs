@@ -111,6 +111,16 @@ namespace FhirProfilePublisher.Engine
                 });
             }
 
+            content.AddRange(new object[]
+            {
+                Html.H3("Schemas"),
+                StructureDefinitionHtmlGenerator.GetSchemasList(new object[]
+                {
+                    Html.A(_outputPaths.GetRelativePath(OutputFileType.ValueSet, valuesetFile.OutputXmlFilename), "Value set XML"),
+                    Html.A(_outputPaths.GetRelativePath(OutputFileType.ValueSet, valuesetFile.OutputJsonFilename), "Value set JSON")
+                })
+            });
+
             return content.ToArray();
         }
 

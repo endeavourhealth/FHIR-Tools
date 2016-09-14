@@ -35,6 +35,7 @@ namespace FhirProfilePublisher.Engine
         public const string ResourceTreeCardinalityColumnClassName = "resource-tree-cardinality-column";
         public const string ResourceTreeTypeColumnClassName = "resource-tree-type-column";
         public const string ResourceTreeDescriptionColumnClassName = "resource-tree-description-column";
+        public const string SchemasListClassName = "schema-list";
 
         public static void WriteStylesToDisk(OutputPaths outputPaths)
         {
