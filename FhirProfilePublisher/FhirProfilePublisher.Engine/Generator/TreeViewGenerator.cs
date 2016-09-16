@@ -181,7 +181,7 @@ namespace FhirProfilePublisher.Engine
                 // short definition
                 string shortDefinition = definition.@short.WhenNotNull(t => t.value);
 
-                if (shortDefinition != null)
+                if (!string.IsNullOrWhiteSpace(shortDefinition))
                     lines.Add(Html.P(shortDefinition));
 
                 // extension details
