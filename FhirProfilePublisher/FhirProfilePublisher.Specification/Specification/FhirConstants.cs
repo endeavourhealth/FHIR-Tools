@@ -19,6 +19,7 @@ namespace FhirProfilePublisher.Specification
         public const string ValueSetSourceReferenceExtensionUrl = "http://hl7.org/fhir/StructureDefinition/valueset-sourceReference";
         public const string ValueSetSystemNameExtensionUrl = "http://hl7.org/fhir/StructureDefinition/valueset-systemName";
         public const string ValueSetSystemUrlExtensionUrl = "http://hl7.org/fhir/StructureDefinition/valueset-systemRef";
+        public const string ValueSetOidExtensionUrl = "http://hl7.org/fhir/StructureDefinition/valueset-oid";
         public const string ResourceMaturityExtensionUrl = "http://hl7.org/fhir/StructureDefinition/structuredefinition-fmm";
 
         public const string DataTypeUrl = "http://hl7.org/fhir/DSTU2/datatypes.html#{0}";

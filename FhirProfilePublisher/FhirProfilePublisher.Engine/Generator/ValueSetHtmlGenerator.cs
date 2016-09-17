@@ -74,13 +74,14 @@ namespace FhirProfilePublisher.Engine
 
             string description = valueset.description.WhenNotNull(t => t.value);
             string referenceUrl = valueset.GetExtensionValueAsString(FhirConstants.ValueSetSourceReferenceExtensionUrl);
+            string oid = valueset.GetExtensionValueAsString(FhirConstants.ValueSetOidExtensionUrl);
 
-            if (!string.IsNullOrEmpty(description))
+            if ((!string.IsNullOrWhiteSpace(description)) && (!string.IsNullOrWhiteSpace(referenceUrl)) && (!string.IsNullOrWhiteSpace(oid)))
             {
                 content.AddRange(new object[]
                 {
                     Html.H3("Description"),
-                    GetFormattedDescription(description, referenceUrl)
+                    GetFormattedDescription(description, referenceUrl, oid)
                 });
             }
 
@@ -90,7 +91,7 @@ namespace FhirProfilePublisher.Engine
                 GenerateDefinition(valueset)
             });
 
-            if (CanExpand(valueset))
+            /*if (CanExpand(valueset))
             {
                 content.AddRange(new object[]
                 {
@@ -98,7 +99,7 @@ namespace FhirProfilePublisher.Engine
                     Html.P("Expansion generated on " + DateTime.Now.ToString("dd-MMM-yyyy") + ".  Please check the source code system(s) for the most recent data."),
                     GenerateCodeExpansion(valueset)
                 });
-            }
+            }*/
 
             string copyright = valueset.copyright.WhenNotNull(t => t.value);
 
@@ -124,24 +125,42 @@ namespace FhirProfilePublisher.Engine
             return content.ToArray();
         }
 
-        private object[] GetFormattedDescription(string description, string referenceUrl)
+        private object[] GetFormattedDescription(string description, string referenceUrl, string oid)
         {
             List<object> result = (description ?? string.Empty)
                 .Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(t => (object)Html.P(t))
                 .ToList();
 
+            List<object> table = new List<object>();
+
             if (!string.IsNullOrWhiteSpace(referenceUrl))
             {
-                result.Add(Html.P(new object[]
+                table.Add(Html.Tr(new object[]
                 {
-                    "Reference: ",
-                    Html.A(new Link(referenceUrl, referenceUrl)),
-                    "."
+                    Html.Td(Html.I("Reference")),
+                    Html.Td(Html.A(new Link(referenceUrl, referenceUrl)))
                 }));
             }
 
+            if (!string.IsNullOrWhiteSpace(oid))
+            {
+                table.Add(Html.Tr(new object[]
+                {
+                    Html.Td(Html.I("OID")),
+                    Html.Td(Html.A(new Link(GetOidLink(oid), oid)))
+                }));
+            }
+
+            if (table.Count > 0)
+                result.Add(Html.Table(new object[] { table, Html.Class(Styles.ValueSetReferenceTableClassName) }));
+
             return result.ToArray();
+        }
+
+        private string GetOidLink(string oid)
+        {
+            return "http://www.hl7.org.uk/version3group/downloads/OidRootHl7UKonly.html#oid_" + oid.Replace("urn:oid:", "");
         }
 
         private object[] GetMaturity(ResourceMaturity maturity)
