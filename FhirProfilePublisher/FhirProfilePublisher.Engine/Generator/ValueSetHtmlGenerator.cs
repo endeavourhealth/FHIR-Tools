@@ -76,7 +76,7 @@ namespace FhirProfilePublisher.Engine
             string referenceUrl = valueset.GetExtensionValueAsString(FhirConstants.ValueSetSourceReferenceExtensionUrl);
             string oid = valueset.GetExtensionValueAsString(FhirConstants.ValueSetOidExtensionUrl);
 
-            if ((!string.IsNullOrWhiteSpace(description)) && (!string.IsNullOrWhiteSpace(referenceUrl)) && (!string.IsNullOrWhiteSpace(oid)))
+            if ((!string.IsNullOrWhiteSpace(description)) || (!string.IsNullOrWhiteSpace(referenceUrl)) || (!string.IsNullOrWhiteSpace(oid)))
             {
                 content.AddRange(new object[]
                 {
