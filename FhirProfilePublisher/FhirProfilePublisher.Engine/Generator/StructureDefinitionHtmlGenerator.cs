@@ -54,7 +54,6 @@ namespace FhirProfilePublisher.Engine
                 Html.H3(GetNameHeader(definition)),
                 Html.P("The official URL for this profile is: "),
                 Html.Pre(definition.url.value),
-                Html.P(GetMaturity(structureDefinitionFile.Maturity)),
                 Html.H3("Description"),
                 Html.P(definition.description.WhenNotNull(t => t.value) ?? (definition.GetDisplayName() + ".")),
                 Html.H3("Definition"),

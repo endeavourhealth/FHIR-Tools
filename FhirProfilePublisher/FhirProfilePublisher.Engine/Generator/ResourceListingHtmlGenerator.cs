@@ -146,7 +146,6 @@ namespace FhirProfilePublisher.Engine
                 Html.THead(new object[]
                 {
                     Html.Th(Styles.ResourceListingTableNameColumnClassName, "Name"),
-                    Html.Th(Styles.ResourceListingTableMaturityColumnClassName, GetMaturityColumnWithImage(ResourceMaturityHelper.GetMaturityLabel(), Images.IconBlank)),
                     Html.Th(Styles.ResourceListingTableIdentifierColumnClassName, "Identifier")
                 }),
                 Html.TBody
@@ -154,7 +153,6 @@ namespace FhirProfilePublisher.Engine
                     items.Select(t => Html.Tr(new object[] 
                     {
                         Html.Td(Styles.ResourceListingTableNameColumnClassName, Html.A(t.OutputHtmlFilename, t.Name)), 
-                        Html.Td(Styles.ResourceListingTableMaturityColumnClassName, GetMaturityColumnWithImage(t.Maturity.GetDescription(), t.Maturity.GetAssociatedIcon())),
                         Html.Td(Styles.ResourceListingTableIdentifierColumnClassName, t.CanonicalUrl)
                     })).ToArray()
                 )
