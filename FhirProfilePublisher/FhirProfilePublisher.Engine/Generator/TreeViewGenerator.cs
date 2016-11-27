@@ -100,9 +100,13 @@ namespace FhirProfilePublisher.Engine
             {
                 Html.Class(Styles.HierarchyClassName),
                 Html.Style(Styles.GetBackgroundImageCss(GetBackgroundHierarchyImage(indents, treeNode.HasChildren))),
-                GetHierarchyImageElement(Images.IconTreeSpacer),
-                GetHierarchyImages(treeNode, indents),
-                GetHierarchyImageElement(Images.IconTreeSpacerWide),
+                Html.Span(new object[]
+                {
+                    Html.Class(Styles.IgnoreWhitespaceClassName),
+                    GetHierarchyImageElement(Images.IconTreeSpacer),
+                    GetHierarchyImages(treeNode, indents),
+                    GetHierarchyImageElement(Images.IconTreeSpacerWide),
+                }),
                 treeNode.GetDisplayName()
             });
 

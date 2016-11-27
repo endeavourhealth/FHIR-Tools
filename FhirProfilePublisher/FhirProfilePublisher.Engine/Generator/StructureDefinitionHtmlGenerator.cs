@@ -59,7 +59,7 @@ namespace FhirProfilePublisher.Engine
                 Html.H3("Definition"),
                 Html.P(GetBaseProfileSentence(definition)),
                 GetTabbedContentView(structureDefinitionFile)
-            }).ToString(SaveOptions.DisableFormatting);
+            }).ToString(SaveOptions.None);
 
             return Pages.Instance.GetPage(definition.GetDisplayName(), content, "0.1", DateTime.Now);
         }

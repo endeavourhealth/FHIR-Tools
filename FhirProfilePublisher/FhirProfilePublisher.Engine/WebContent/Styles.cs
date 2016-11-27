@@ -37,6 +37,7 @@ namespace FhirProfilePublisher.Engine
         public const string ResourceTreeDescriptionColumnClassName = "resource-tree-description-column";
         public const string SchemasListClassName = "schema-list";
         public const string ValueSetReferenceTableClassName = "valueset-reference-table";
+        public const string IgnoreWhitespaceClassName = "ignore-whitespace";
 
         public static void WriteStylesToDisk(OutputPaths outputPaths)
         {
