@@ -7,13 +7,20 @@ namespace FhirProfilePublisher.Specification
 {
     public class SDTreeBuilder
     {
-        public SDTreeBuilder()
+        private StructureDefinition _structureDefinition;
+        private SDHierarchy _sdHierarchy;
+        private IStructureDefinitionResolver _resolver;
+
+        public SDTreeBuilder(StructureDefinition structureDefinition, IStructureDefinitionResolver resolver)
         {
+            _structureDefinition = XmlHelper.DeepClone(structureDefinition);
+            _sdHierarchy = new SDHierarchy(_structureDefinition, resolver);
+            _resolver = resolver;
         }
 
-        public SDTreeNode GenerateDifferentialTree(StructureDefinition structureDefinition, IStructureDefinitionResolver resolver)
+        public SDTreeNode GenerateDifferentialTree()
         {
-            SDTreeNode snapshotTree = GenerateSnapshotTree(structureDefinition, resolver, true);
+            SDTreeNode snapshotTree = GenerateSnapshotTree(true);
 
             snapshotTree.DepthFirstTreeWalk(t => RemoveUnchangedNodes(t));
 
@@ -27,18 +34,15 @@ namespace FhirProfilePublisher.Specification
                     node.Parent.RemoveChild(node);
         }
 
-        public SDTreeNode GenerateSnapshotTree(StructureDefinition structureDefinition, IStructureDefinitionResolver resolver, bool includeNodesWithZeroMaxCardinality = true)
+        public SDTreeNode GenerateSnapshotTree(bool includeNodesWithZeroMaxCardinality = true)
         {
-            // take a copy as we will modify below
-            structureDefinition = XmlHelper.DeepClone(structureDefinition);
-
             // process ElementDefinition list
             //
             // to create list where path values are unique (by indexing slices)
             // and where there are no orphan children by creating fake parents
             //
 
-            ElementDefinition[] elements = structureDefinition.differential.element;
+            ElementDefinition[] elements = _structureDefinition.differential.element;
 
             // mark elements as changed
             foreach (ElementDefinition element in elements)
@@ -47,11 +51,14 @@ namespace FhirProfilePublisher.Specification
             // sanity checks
             PerformDifferentialElementsSanityCheck(elements, false);
 
+            // populate ElementDefinitions with their ancestor ElementDefinition
+            PopulateBaseElementDefinitions(elements);
+
             // "index" slices to create unique ElementDefinition.path values
             IndexSlices(elements);
 
             // Merge differential and the direct base StructureDefinition's differential. -- this needs expanding to include all ancestor base StructureDefinitions
-            elements = CreateSnapshot(structureDefinition, resolver);
+            elements = CreateSnapshot(_structureDefinition);
 
             // Add fake missing parents
             elements = AddFakeMissingParents(elements);
@@ -80,7 +87,7 @@ namespace FhirProfilePublisher.Specification
             rootNode.DepthFirstTreeWalk(t => RemoveExtensionSetupSlices(t));
 
             // add extension definitions
-            rootNode.DepthFirstTreeWalk(t => AddExtensionDefinitions(t, resolver));
+            rootNode.DepthFirstTreeWalk(t => AddExtensionDefinitions(t, _resolver));
 
             // group children of slice parent not part of numbered slice
             rootNode.DepthFirstTreeWalk(t => GroupOpenSliceElements(t));
@@ -105,6 +112,12 @@ namespace FhirProfilePublisher.Specification
             if (checkPathForUniqueness)
                 VerifyPathIsUnique(elements);
 
+        }
+
+        private void PopulateBaseElementDefinitions(ElementDefinition[] elements)
+        {
+            foreach (ElementDefinition element in elements)
+                element.BaseElementDefinition = _sdHierarchy.GetAncestorElementDefinitionFromCurrent(element);
         }
 
         private void VerifyPathIsUnique(ElementDefinition[] elements)
@@ -191,12 +204,19 @@ namespace FhirProfilePublisher.Specification
             }
             else  // else check whether is root of complex type
             {
-                if (node.Element.type.WhenNotNull(t => t.Count()) != 1)
+                // don't expand profiles with multi choice types
+                if (node.GetElementDefinitionType() == null)
                     return;
 
-                ElementDefinitionType elementType = node.Element.type.First();
+                if (node.GetElementDefinitionType().Count() != 1)
+                    return;
 
-                if (!elementType.IsComplexType())
+                ElementDefinitionType elementType = node.GetElementDefinitionType().Single();
+
+                if (elementType == null)
+                    return;
+
+                if (!(elementType.IsComplexType() || elementType.IsReference()))
                     return;
 
                 // don't expand root Extension elements
@@ -216,33 +236,44 @@ namespace FhirProfilePublisher.Specification
 
             foreach (ElementDefinition dataTypeChildElement in dataTypeChildElements)
             {
-                string lastPathElement = dataTypeChildElement.path.value.Substring(dataTypeRootElement.path.value.Length + 1);
+                string lastPathElement = dataTypeChildElement.GetLastPathValue();
 
-                SDTreeNode existingChild = node.Children.FirstOrDefault(t => t.LastPathElement == lastPathElement);
-                SDTreeNode newChild = null;
+                SDTreeNode[] existingChildren = node.Children.Where(t => t.LastPathElementWithoutSliceIndex == lastPathElement).ToArray();
 
-                // if the data type's child element exists in the profile
-                if (existingChild != null)
+                List<SDTreeNode> currentNewChildren = new List<SDTreeNode>();
+
+                // if child or children don't exist, add the child
+                if (existingChildren.Length == 0)
                 {
-                    // and is not a "fake" element
-                    if (!existingChild.Element.IsFake)
+                    // TEMPORARY IF STATEMENT
+                    if (!node.GetElementDefinitionType().Single().IsReference())
                     {
-                        newChildren.Add(existingChild);
-                    }
-                    else  // is a "fake" element
-                    {
-                        newChild = new SDTreeNode(dataTypeChildElement);
-                        SDTreeNode[] childsChildren = existingChild.Children;
-                        existingChild.RemoveAllChildren();
-                        newChild.AddChildren(childsChildren);
-                        newChildren.Add(newChild);
+                        SDTreeNode newChild = new SDTreeNode(dataTypeChildElement);
+                        currentNewChildren.Add(newChild);
                     }
                 }
-                else  // if the data type's child element doesn't exist in the profile
+                else // child or children already exists
                 {
-                    newChild = new SDTreeNode(dataTypeChildElement);
-                    newChildren.Add(newChild);
+                    foreach (SDTreeNode existingChild in existingChildren)
+                    {
+                        // if is a "fake" element, it needs replacing
+                        if (existingChild.Element.IsFake)
+                        {
+                            SDTreeNode newChild = new SDTreeNode(dataTypeChildElement);
+                            SDTreeNode[] childsChildren = existingChild.Children;
+                            existingChild.RemoveAllChildren();
+                            newChild.AddChildren(childsChildren);
+                            currentNewChildren.Add(newChild);
+                        }
+                        else // keep the existing child
+                        {
+                            existingChild.Element.BaseElementDefinition = dataTypeChildElement;
+                            currentNewChildren.Add(existingChild);
+                        }
+                    }
                 }
+
+                newChildren.AddRange(currentNewChildren);
 
                 // if complex data type's children have children....argh!  (should only be for the Timing data type)
                 if (dataTypeDefinition.differential.element.GetChildren(dataTypeChildElement).Count() > 0)
@@ -253,7 +284,8 @@ namespace FhirProfilePublisher.Specification
                         MultiLevelElementDefinition = dataTypeChildElement
                     };
 
-                    multiLevelComplexTypeRevisit.Add(newChild ?? existingChild, multiLevelComplexTypePointer);
+                    foreach (SDTreeNode currentChild in currentNewChildren)
+                        multiLevelComplexTypeRevisit.Add(currentChild, multiLevelComplexTypePointer);
                 }
             }
 
@@ -327,14 +359,14 @@ namespace FhirProfilePublisher.Specification
             }
         }
 
-        private static ElementDefinition[] CreateSnapshot(StructureDefinition structure, IStructureDefinitionResolver locator)
+        private ElementDefinition[] CreateSnapshot(StructureDefinition structure)
         {
             ElementDefinition[] elements = structure.differential.WhenNotNull(t => t.element);
 
             if (elements == null)
                 throw new Exception("No differential in definition");
 
-            StructureDefinition baseStructure = locator.GetStructureDefinition(structure.@base.value);
+            StructureDefinition baseStructure = _sdHierarchy.ImmediateAncestor;
             ElementDefinition[] baseSnapshotElements = baseStructure.differential.WhenNotNull(t => t.element);
 
             if (baseSnapshotElements == null)
@@ -344,10 +376,7 @@ namespace FhirProfilePublisher.Specification
 
             foreach (ElementDefinition baseElement in baseSnapshotElements)
             {
-                ElementDefinition element = structure
-                    .differential
-                    .element
-                    .FirstOrDefault(t => t.GetBasePath() == baseElement.path.value);
+                ElementDefinition element = _sdHierarchy.GetCurrentElementDefinition(baseElement.path.WhenNotNull(t => t.value));
 
                 if (element != null)
                     result.Add(element);
@@ -415,22 +444,21 @@ namespace FhirProfilePublisher.Specification
             if (!treeNode.GetNodeType().IsExtension())
                 return;
 
-            if (treeNode.Element == null)
+            ElementDefinitionType[] type = treeNode.GetElementDefinitionType();
+
+            if (type == null)
                 return;
 
-            if (treeNode.Element.type == null)
+            if (type.Length != 1)
                 return;
 
-            if (treeNode.Element.type.Length != 1)
+            if (type.First().profile == null)
                 return;
 
-            if (treeNode.Element.type.First().profile == null)
+            if (type.First().profile.Length != 1)
                 return;
 
-            if (treeNode.Element.type.First().profile.Length != 1)
-                return;
-
-            uri profileUri = treeNode.Element.type.First().profile.First();
+            uri profileUri = type.First().profile.First();
 
             if (profileUri == null)
                 return;
@@ -461,7 +489,7 @@ namespace FhirProfilePublisher.Specification
                     openSliceElement.name = new @string();
                     // openSliceElement.name.value = "open";
                     // also fix cardinalities
-                    openSliceElement.type = node.Element.type;
+                    openSliceElement.type = node.GetElementDefinitionType();
                     SDTreeNode openSlice = new SDTreeNode(openSliceElement);
                     openSlice.AddChildren(nodesToGroup.ToArray());
                     node.AddChild(openSlice);
@@ -474,7 +502,7 @@ namespace FhirProfilePublisher.Specification
                     openAtEndSliceElement.name = new @string();
                     // openAtEndSliceElement.name.value = "openAtEnd";
                     // also fix cardinalities
-                    openAtEndSliceElement.type = node.Element.type;
+                    openAtEndSliceElement.type = node.GetElementDefinitionType();
                     SDTreeNode openAtEndSlice = new SDTreeNode(openAtEndSliceElement);
                     openAtEndSlice.AddChildren(nodesToGroup.ToArray());
                     node.AddChild(openAtEndSlice);

@@ -48,10 +48,13 @@ namespace Hl7.Fhir.V102
             if (!IsExtension())
                 throw new ArgumentException("Not an extension definition", "extensionDefinition");
 
-            ElementDefinition element = differential.element.FirstOrDefault(t => t.GetBasePath() == "Extension.value[x]");
+            ElementDefinition element = element = differential.element.FirstOrDefault(t => t.path.value == "Extension.value[x]");
 
             if (element == null)
-                element = differential.element.FirstOrDefault(t => t.path.value == "Extension.value[x]");
+                element = differential.element.FirstOrDefault(t => t.GetBasePath() == "Extension.value[x]");
+
+            if (element == null)
+                element = differential.element.FirstOrDefault(t => t.GetReconstructedBasePath() == "Extension.value[x]");
 
             if (element == null)
                 return null;
@@ -77,6 +80,11 @@ namespace Hl7.Fhir.V102
             return differential
                 .element
                 .Single(t => t.path.value.Split('.').Count() == 1);
+        }
+
+        public string GetRootPath()
+        {
+            return GetRootPathElement().path.value;
         }
 
         public string W5TopLevelGroup

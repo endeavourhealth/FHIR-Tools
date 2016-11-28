@@ -22,16 +22,16 @@ namespace FhirProfilePublisher.Engine
 
         public XElement GenerateSnapshot(StructureDefinition structureDefinition)
         {
-            SDTreeBuilder builder = new SDTreeBuilder();
-            SDTreeNode rootNode = builder.GenerateSnapshotTree(structureDefinition, _resourceFileSet, false);
+            SDTreeBuilder builder = new SDTreeBuilder(structureDefinition, _resourceFileSet);
+            SDTreeNode rootNode = builder.GenerateSnapshotTree(false);
 
             return GenerateHtml(rootNode);
         }
 
         public XElement GenerateDifferential(StructureDefinition structureDefinition)
         {
-            SDTreeBuilder builder = new SDTreeBuilder();
-            SDTreeNode rootNode = builder.GenerateDifferentialTree(structureDefinition, _resourceFileSet);
+            SDTreeBuilder builder = new SDTreeBuilder(structureDefinition, _resourceFileSet);
+            SDTreeNode rootNode = builder.GenerateDifferentialTree();
 
             return GenerateHtml(rootNode);
         }
@@ -76,14 +76,12 @@ namespace FhirProfilePublisher.Engine
 
         private XElement GetTableRow(SDTreeNode treeNode)
         {
-            ElementDefinition currentElement = treeNode.Element;
-
             List<object> result = new List<object>()
             {
                 GetNameAndImagesTableCell(treeNode),
-                Html.Td(currentElement.GetCardinalityText()),
-                GetTypeTableCell(treeNode.Element.WhenNotNull(t => t.type), treeNode),
-                GetDescriptionTableCell(currentElement)
+                Html.Td(treeNode.GetCardinalityText()),
+                GetTypeTableCell(treeNode.GetElementDefinitionType(), treeNode),
+                GetDescriptionTableCell(treeNode)
             };
 
             if (treeNode.HasZeroMaxCardinality())
@@ -120,9 +118,13 @@ namespace FhirProfilePublisher.Engine
             if (types == null)
             {
                 if (associatedTreeNode != null)
-                    if (associatedTreeNode.Element.nameReference != null)
-                        if (!string.IsNullOrWhiteSpace(associatedTreeNode.Element.nameReference.value))
-                            return Html.Td("(see element " + associatedTreeNode.Element.nameReference.value + ")");
+                {
+                    ElementDefinition associatedElement = associatedTreeNode.Element;
+
+                    if (associatedElement.nameReference != null)
+                        if (!string.IsNullOrWhiteSpace(associatedElement.nameReference.value))
+                            return Html.Td("(see element " + associatedElement.nameReference.value + ")");
+                }
 
                 return Html.Td(string.Empty);
             }
@@ -176,14 +178,16 @@ namespace FhirProfilePublisher.Engine
             }
         }
 
-        private XElement GetDescriptionTableCell(ElementDefinition definition)
+        private XElement GetDescriptionTableCell(SDTreeNode treeNode)
         {
+            ElementDefinition definition = treeNode.Element;
+
             List<object> lines = new List<object>();
 
-            if (!definition.IsRemoved())
+            if (!treeNode.IsRemoved())
             {
                 // short definition
-                string shortDefinition = definition.@short.WhenNotNull(t => t.value);
+                string shortDefinition = treeNode.GetShortDescription();
 
                 if (!string.IsNullOrWhiteSpace(shortDefinition))
                     lines.Add(Html.P(shortDefinition));
@@ -202,7 +206,7 @@ namespace FhirProfilePublisher.Engine
                     lines.Add(Html.P(GetLabelAndValue("Fixed value", definition.GetFixedValue())));
 
                 // valueset/bindings
-                string valueSetUri = definition.GetValueSetUri();
+                string valueSetUri = treeNode.GetValueSetUri();
 
                 if (!string.IsNullOrWhiteSpace(valueSetUri))
                 {
@@ -212,7 +216,7 @@ namespace FhirProfilePublisher.Engine
                     {
                         Html.A(valuesetLink.Url, valuesetLink.Display),
                         " (",
-                        Html.A((definition.GetValueSetBindingStrength().GetUrl()), definition.GetValueSetBindingStrength().GetDescription()),
+                        Html.A((treeNode.GetValueSetBindingStrength().GetUrl()), treeNode.GetValueSetBindingStrength().GetDescription()),
                         ")"
                     })));
                 }

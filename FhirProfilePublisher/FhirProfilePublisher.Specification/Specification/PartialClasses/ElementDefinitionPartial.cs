@@ -12,9 +12,23 @@ namespace Hl7.Fhir.V102
         internal string PathBeforeSliceIndexing { get; set; }
         internal bool IsFake { get; set; } = false;
         internal bool HasChangedFromBase { get; set; } = false;
+        internal ElementDefinition BaseElementDefinition { get; set; }
+
+        public ElementDefinitionType[] GetElementDefinitionType()
+        {
+            if (this.type != null)
+                return this.type;
+
+            if (this.BaseElementDefinition != null)
+                return this.BaseElementDefinition.type;
+
+            return null;
+        }
 
         public string GetValueSetUri()
         {
+            ElementDefinitionBinding binding = GetElementDefinitionBinding();
+
             if (binding != null)
                 if (binding.Item != null)
                     if (binding.Item is Reference)
@@ -25,10 +39,23 @@ namespace Hl7.Fhir.V102
 
         public BindingStrengthlist? GetValueSetBindingStrength()
         {
+            ElementDefinitionBinding binding = GetElementDefinitionBinding();
+
             if (binding != null)
                 if (binding.strength != null)
                     if (binding.strength.valueSpecified)
                         return binding.strength.value;
+
+            return null;
+        }
+
+        private ElementDefinitionBinding GetElementDefinitionBinding()
+        {
+            if (binding != null)
+                return binding;
+
+            if (BaseElementDefinition != null)
+                return BaseElementDefinition.binding;
 
             return null;
         }
@@ -62,13 +89,37 @@ namespace Hl7.Fhir.V102
         
         public string GetCardinalityText()
         {
-            int? min = this.min.WhenNotNull(t => t.value);
-            string max = this.max.WhenNotNull(t => t.value);
+            int? min = GetMin();
+            string max = GetMax();
 
             if (min == null || max == null)
                 return null;
 
             return min.ToString() + ".." + max;
+        }
+
+        public int? GetMin()
+        {
+            if (this.min != null)
+                return this.min.value;
+
+            if (this.BaseElementDefinition != null)
+                if (this.BaseElementDefinition.min != null)
+                    return this.BaseElementDefinition.min.value;
+
+            return null;
+        }
+
+        public string GetMax()
+        {
+            if (this.max != null)
+                return this.max.value;
+
+            if (this.BaseElementDefinition != null)
+                if (this.BaseElementDefinition.max != null)
+                    return this.BaseElementDefinition.max.value;
+
+            return null;
         }
 
         public string GetLastPathValue()
@@ -80,6 +131,10 @@ namespace Hl7.Fhir.V102
         {
             if (constraint != null)
                 return constraint.Select(t => t.human.WhenNotNull(s => s.value)).ToArray();
+
+            if (this.BaseElementDefinition != null)
+                if (this.BaseElementDefinition.constraint != null)
+                    return this.BaseElementDefinition.constraint.Select(t => t.human.WhenNotNull(s => s.value)).ToArray();
 
             return new string[] { };
         }
@@ -113,6 +168,16 @@ namespace Hl7.Fhir.V102
             return base.ToString();
         }
 
+        public string GetBasePathOrPath()
+        {
+            string path = GetBasePath();
+
+            if (!string.IsNullOrWhiteSpace(path))
+                return path;
+
+            return this.path.value;
+        }
+
         public string GetBasePath()
         {
             if (@base != null)
@@ -120,7 +185,31 @@ namespace Hl7.Fhir.V102
                     if (!string.IsNullOrWhiteSpace(@base.path.value))
                         return @base.path.value;
 
-            return path.value;
+            return null;
+        }
+
+        public string GetReconstructedBasePath()
+        {
+            if (type != null)
+                if (type.Length == 1)
+                    if (type.First().code != null)
+                        if (!String.IsNullOrEmpty(type.First().code.value))
+                            if (path.value.ToLower().EndsWith(type.First().code.value.ToLower()))
+                                return path.value.Substring(0, (path.value.Length - type.First().code.value.Length)) + "[x]";
+
+            return null;
+        }
+
+        public string GetShortDescription()
+        {
+            if (@short != null)
+                return @short.value;
+
+            if (BaseElementDefinition != null)
+                if (BaseElementDefinition.@short != null)
+                    return BaseElementDefinition.@short.value;
+
+            return null;
         }
     }
 }

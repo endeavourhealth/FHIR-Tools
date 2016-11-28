@@ -81,6 +81,7 @@
     <Compile Include="Utilities\General\ResourceHelper.cs" />
     <Compile Include="Utilities\General\StringHelper.cs" />
     <Compile Include="Utilities\General\XmlHelper.cs" />
+    <Compile Include="Utilities\StructureDefinitionTree\SDHierarchy.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

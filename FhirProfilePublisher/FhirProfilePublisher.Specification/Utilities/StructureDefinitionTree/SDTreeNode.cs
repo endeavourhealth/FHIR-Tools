@@ -15,9 +15,23 @@ namespace FhirProfilePublisher.Specification
 
         public SDTreeNode Parent { get; set; }
         public string Path { get; private set; }
-        public ElementDefinition Element { get; private set; }
+        public ElementDefinition Element { get; set; }
         public bool IsSlice { get; set; }
         public StructureDefinition ExtensionDefinition { get; set; }
+
+        public SDTreeNode(ElementDefinition element)
+        {
+            Element = element;
+            Path = element.path.WhenNotNull(t => t.value);
+            _lastPathElement = element.GetLastPathValue();
+            _name = element.name.WhenNotNull(t => t.value);
+            IsSlice = false;
+        }
+
+        public ElementDefinitionType[] GetElementDefinitionType()
+        {
+            return this.Element.GetElementDefinitionType();
+        }
 
         public bool HasChangedFromBase
         {
@@ -82,13 +96,12 @@ namespace FhirProfilePublisher.Specification
             }
         }
 
-        public SDTreeNode(ElementDefinition element)
+        public string LastPathElementWithoutSliceIndex
         {
-            Element = element;
-            Path = element.path.WhenNotNull(t => t.value);
-            _lastPathElement = element.GetLastPathValue();
-            _name = element.name.WhenNotNull(t => t.value);
-            IsSlice = false;
+            get
+            {
+                return (Element.PathBeforeSliceIndexing ?? Element.path.value).Split('.').Last();
+            }
         }
 
         public void AddChild(SDTreeNode child)
@@ -154,6 +167,11 @@ namespace FhirProfilePublisher.Specification
             return (treeNode.Element.IsRemoved() || HasZeroMaxCardinality(treeNode.Parent));
         }
 
+        public string GetCardinalityText()
+        {
+            return Element.GetCardinalityText();
+        }
+
         public string GetDisplayName()
         {
             if (GetNodeType().IsExtension())
@@ -165,6 +183,9 @@ namespace FhirProfilePublisher.Specification
                 string result = Element.GetLastPathValue();
 
                 string name = Element.name.WhenNotNull(t => t.value);
+
+                if (name == null)
+                    name = Element.BaseElementDefinition.WhenNotNull(t => t.name.WhenNotNull(s => s.value));
 
                 if (!string.IsNullOrWhiteSpace(name))
                     result += " [" + name + "]";
@@ -178,15 +199,17 @@ namespace FhirProfilePublisher.Specification
             if (IsSetupSlice)
                 return SDNodeType.SetupSlice;
 
-            if (Element.type != null)
+            ElementDefinitionType[] types = GetElementDefinitionType();
+
+            if (types != null)
             {
-                if (Element.type.Length == 0)
+                if (types.Length == 0)
                 {
                     return SDNodeType.Unknown;
                 }
-                else if (Element.type.Length == 1)
+                else if (types.Length == 1)
                 {
-                    ElementDefinitionType elementType = Element.type.Single();
+                    ElementDefinitionType elementType = types.Single();
 
                     if (elementType.IsBackboneElement())
                         return SDNodeType.Element;
@@ -211,7 +234,7 @@ namespace FhirProfilePublisher.Specification
                 }
                 else
                 {
-                    if (Element.type.Any(t => t.IsReference()))
+                    if (types.Any(t => t.IsReference()))
                         return SDNodeType.Reference;
 
                     return SDNodeType.Choice;
@@ -229,6 +252,26 @@ namespace FhirProfilePublisher.Specification
             }
 
             return SDNodeType.Unknown;
+        }
+
+        public bool IsRemoved()
+        {
+            return Element.IsRemoved();
+        }
+
+        public string GetShortDescription()
+        {
+            return Element.GetShortDescription();
+        }
+
+        public string GetValueSetUri()
+        {
+            return Element.GetValueSetUri();
+        }
+
+        public BindingStrengthlist? GetValueSetBindingStrength()
+        {
+            return Element.GetValueSetBindingStrength();
         }
 
         public void DepthFirstTreeWalk(Action<SDTreeNode> function)
