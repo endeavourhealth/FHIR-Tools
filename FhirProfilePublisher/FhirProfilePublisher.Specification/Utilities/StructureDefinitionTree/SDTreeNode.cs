@@ -176,7 +176,12 @@ namespace FhirProfilePublisher.Specification
         {
             if (GetNodeType().IsExtension())
             {
-                return Element.name.WhenNotNull(t => t.value);
+                string name = Element.name.WhenNotNull(t => t.value);
+
+                if (!String.IsNullOrWhiteSpace(name))
+                    return name;
+
+                return Element.GetLastPathValue();
             }
             else
             {

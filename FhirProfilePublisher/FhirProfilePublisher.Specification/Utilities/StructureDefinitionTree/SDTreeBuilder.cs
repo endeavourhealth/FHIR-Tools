@@ -245,12 +245,8 @@ namespace FhirProfilePublisher.Specification
                 // if child or children don't exist, add the child
                 if (existingChildren.Length == 0)
                 {
-                    // TEMPORARY IF STATEMENT
-                    if (!node.GetElementDefinitionType().Single().IsReference())
-                    {
-                        SDTreeNode newChild = new SDTreeNode(dataTypeChildElement);
-                        currentNewChildren.Add(newChild);
-                    }
+                    SDTreeNode newChild = new SDTreeNode(dataTypeChildElement);
+                    currentNewChildren.Add(newChild);
                 }
                 else // child or children already exists
                 {
