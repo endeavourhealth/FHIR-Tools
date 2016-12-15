@@ -11,7 +11,7 @@ namespace FhirProfilePublisher.Engine
         protected const string HtmlExtension = "html";
         protected const string XmlExtension = "xml";
         protected const string JsonExtension = "json";
-        
+
         public string Xml { get; protected set; }
         public string Json { get; protected set; }
 
@@ -22,6 +22,7 @@ namespace FhirProfilePublisher.Engine
         public abstract string OutputXmlFilename { get; }
         public abstract string OutputJsonFilename { get; }
         public abstract ResourceMaturity Maturity { get; }
+        public abstract string VersionNumber { get; }
 
         public string[] OutputFileNames
         {

@@ -73,5 +73,18 @@ namespace FhirProfilePublisher.Engine
                 return (ResourceMaturity)result;
             }
         }
+
+        public override string VersionNumber
+        {
+            get
+            {
+                string versionNumber = ValueSet.version.WhenNotNull(t => t.value);
+
+                if (string.IsNullOrWhiteSpace(versionNumber))
+                    return "1.0";
+
+                return versionNumber;
+            }
+        }
     }
 }

@@ -69,6 +69,8 @@ namespace FhirProfilePublisher.Engine
                 Html.H3(GetValueSetNameLabel(name)),
                 Html.P("The official URL for this value set is: "),
                 Html.Pre(url),
+                Html.H3("Version"),
+                Html.P(valuesetFile.VersionNumber)
             });
 
             string description = valueset.description.WhenNotNull(t => t.value);

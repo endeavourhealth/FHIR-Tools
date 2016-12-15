@@ -146,13 +146,15 @@ namespace FhirProfilePublisher.Engine
                 Html.THead(new object[]
                 {
                     Html.Th(Styles.ResourceListingTableNameColumnClassName, "Name"),
+                    Html.Th(Styles.ResourceListingTableMaturityColumnClassName, "Version"),
                     Html.Th(Styles.ResourceListingTableIdentifierColumnClassName, "Identifier")
                 }),
                 Html.TBody
                 (
                     items.Select(t => Html.Tr(new object[] 
                     {
-                        Html.Td(Styles.ResourceListingTableNameColumnClassName, Html.A(t.OutputHtmlFilename, t.Name)), 
+                        Html.Td(Styles.ResourceListingTableNameColumnClassName, Html.A(t.OutputHtmlFilename, t.Name)),
+                        Html.Td(Styles.ResourceListingTableMaturityColumnClassName, t.VersionNumber), 
                         Html.Td(Styles.ResourceListingTableIdentifierColumnClassName, t.CanonicalUrl)
                     })).ToArray()
                 )
