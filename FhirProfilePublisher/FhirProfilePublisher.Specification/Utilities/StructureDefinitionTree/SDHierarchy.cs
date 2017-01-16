@@ -103,8 +103,8 @@ namespace FhirProfilePublisher.Specification
             {
                 string searchPath = ReplacePathResourcePrefix(current.path.value, sd.GetRootPath());
 
-                if ((searchPath == "DomainResource.extension") || (searchPath == "Element.extension"))
-                    return null;
+                //if ((searchPath == "DomainResource.extension") || (searchPath == "Element.extension"))
+                //    return null;
 
                 ElementDefinition ancestorElement = sd
                     .differential

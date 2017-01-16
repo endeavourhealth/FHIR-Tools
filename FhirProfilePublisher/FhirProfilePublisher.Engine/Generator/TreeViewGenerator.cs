@@ -186,8 +186,17 @@ namespace FhirProfilePublisher.Engine
 
             if (!treeNode.IsRemoved())
             {
+                String shortDefExtension = null;
+                if (treeNode.ExtensionDefinition != null)
+                    if (treeNode.ExtensionDefinition.GetRootPathElement() != null)
+                        if (treeNode.ExtensionDefinition.GetRootPathElement().@short != null)
+                            shortDefExtension = treeNode.ExtensionDefinition.GetRootPathElement().@short.value;
+
                 // short definition
                 string shortDefinition = treeNode.GetShortDescription();
+
+                if (string.IsNullOrWhiteSpace(shortDefinition) || shortDefinition == "Additional Content defined by implementations")
+                    shortDefinition = shortDefExtension; 
 
                 if (!string.IsNullOrWhiteSpace(shortDefinition))
                     lines.Add(Html.P(shortDefinition));
