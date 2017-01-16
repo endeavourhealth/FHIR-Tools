@@ -86,22 +86,21 @@ namespace FhirProfilePublisher.Engine
                 });
             }
 
-            content.AddRange(new object[]
-            {
-                Html.H3("Definition"),
-                GenerateDefinition(valueset)
-            });
-
             string requirements = valueset.requirements.WhenNotNull(t => t.value);
 
             if (!string.IsNullOrWhiteSpace(requirements))
             {
                 content.AddRange(new object[]
                 {
-                    Html.H3("Requirements"),
                     Html.P(requirements)
                 });
             }
+
+            content.AddRange(new object[]
+            {
+                Html.H3("Definition"),
+                GenerateDefinition(valueset)
+            });
 
             /*if (CanExpand(valueset))
             {
