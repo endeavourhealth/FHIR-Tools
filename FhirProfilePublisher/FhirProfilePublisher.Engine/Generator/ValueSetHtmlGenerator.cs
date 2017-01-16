@@ -92,6 +92,17 @@ namespace FhirProfilePublisher.Engine
                 GenerateDefinition(valueset)
             });
 
+            string requirements = valueset.requirements.WhenNotNull(t => t.value);
+
+            if (!string.IsNullOrWhiteSpace(requirements))
+            {
+                content.AddRange(new object[]
+                {
+                    Html.H3("Requirements"),
+                    Html.P(requirements)
+                });
+            }
+
             /*if (CanExpand(valueset))
             {
                 content.AddRange(new object[]
