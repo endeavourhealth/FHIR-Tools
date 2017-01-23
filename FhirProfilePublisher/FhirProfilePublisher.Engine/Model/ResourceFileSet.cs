@@ -168,6 +168,21 @@ namespace FhirProfilePublisher.Engine
             );
         }
 
+        public ValueSet GetValueSet(string url)
+        {
+            ValueSetFile valueSetFile = _valueSets.SingleOrDefault(t => t.CanonicalUrl == url);
+
+            if (valueSetFile != null)
+                return valueSetFile.ValueSet;
+
+            ValueSet valueSet = FhirData.Instance.FindValueSet(url);
+
+            if (valueSet == null)
+                throw new Exception("ValueSet " + url + " not found.");
+
+            return valueSet;
+        }
+
         public Link GetValueSetLink(string canonicalUrl)
         {
             ValueSetFile valueSetFile = _valueSets.SingleOrDefault(t => t.CanonicalUrl == canonicalUrl);
