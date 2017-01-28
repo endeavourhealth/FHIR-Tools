@@ -49,6 +49,8 @@
     <Compile Include="Exceptions\FhirProfilePublisherException.cs" />
     <Compile Include="Exceptions\NoIdException.cs" />
     <Compile Include="Exceptions\ReferenceNotFoundException.cs" />
+    <Compile Include="Generator\ConceptMapHtmlGenerator.cs" />
+    <Compile Include="Model\ConceptMapFile.cs" />
     <Compile Include="WebContent\Pages.cs" />
     <Compile Include="WebContent\Scripts.cs" />
     <Compile Include="WebContent\Images.cs" />
