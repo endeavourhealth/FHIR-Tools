@@ -12,8 +12,8 @@ namespace FhirProfilePublisher.Engine
     {
         private Dictionary<OutputFileType, string> _relativePaths = new Dictionary<OutputFileType, string>();
         private string _outputDirectory;
-
-        public OutputPaths(string outputDirectory, string stylesRelativePath, string imagesRelativePath, string scriptsRelativePath, string structureDefinitionPath, string valueSetPath)
+        // Kevin Mayfield Leeds Teaching Trust 23/1/2017 added ConceptMap path
+        public OutputPaths(string outputDirectory, string stylesRelativePath, string imagesRelativePath, string scriptsRelativePath, string structureDefinitionPath, string valueSetPath, string conceptMapPath)
         {
             _outputDirectory = outputDirectory;
             _relativePaths.Add(OutputFileType.Html, string.Empty);
@@ -22,6 +22,8 @@ namespace FhirProfilePublisher.Engine
             _relativePaths.Add(OutputFileType.StructureDefinition, structureDefinitionPath);
             _relativePaths.Add(OutputFileType.Style, stylesRelativePath);
             _relativePaths.Add(OutputFileType.ValueSet, valueSetPath);
+            // Kevin Mayfield Leeds Teaching Trust 23/1/2017 added ConceptMap path
+            _relativePaths.Add(OutputFileType.ConceptMap, conceptMapPath);
         }
 
         private string GetRelativePath(OutputFileType fileType)

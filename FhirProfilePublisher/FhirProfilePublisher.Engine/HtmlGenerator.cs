@@ -29,7 +29,9 @@ namespace FhirProfilePublisher.Engine
                 imagesRelativePath: "images",
                 scriptsRelativePath: "scripts",
                 structureDefinitionPath: "StructureDefinition", 
-                valueSetPath: "ValueSet"
+                valueSetPath: "ValueSet",
+                // Kevin Mayfield Leeds Teaching Trust 23/1/2017 added ConceptMap
+                conceptMapPath: "ConceptMap"
             );
 
             Pages.Instance.PageHeader = outputOptions.HeaderText;
@@ -57,6 +59,11 @@ namespace FhirProfilePublisher.Engine
             ValueSetHtmlGenerator valuesetGenerator = new ValueSetHtmlGenerator(resourceFileSet, outputPaths);
             valuesetGenerator.GenerateAll();
 
+            // Kevin Mayfield Leeds Teaching Trust 23/1/2017 added ConceptMap
+            // conceptmap pages
+            ConceptMapHtmlGenerator conceptMapGenerator = new ConceptMapHtmlGenerator(resourceFileSet, outputPaths);
+            conceptMapGenerator.GenerateAll();
+
             if (outputOptions.ShowEverythingOnOnePage)
             {
                 ResourceListingHtmlGenerator resourceListingGenerator = new ResourceListingHtmlGenerator(outputPaths, outputOptions);
@@ -69,6 +76,10 @@ namespace FhirProfilePublisher.Engine
 
                 ResourceListingHtmlGenerator valueSetsListingGenerator = new ResourceListingHtmlGenerator(outputPaths, outputOptions);
                 resourceListingGenerator.GenerateValueSetListing("valuesets.html", resourceFileSet);
+                
+                // Kevin Mayfield Leeds Teaching Trust 23/1/2017 added ConceptMap
+                ResourceListingHtmlGenerator conceptMapsListingGenerator = new ResourceListingHtmlGenerator(outputPaths, outputOptions);
+                resourceListingGenerator.GenerateConceptMapListing("conceptmaps.html", resourceFileSet);
 
                 GenericPageGenerator pageGenerator = new GenericPageGenerator(outputPaths);
                 pageGenerator.Generate("index.html", "Overview", outputOptions.IndexPageHtml);

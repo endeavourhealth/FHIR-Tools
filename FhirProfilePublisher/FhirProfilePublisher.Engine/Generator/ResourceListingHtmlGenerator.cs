@@ -116,11 +116,31 @@ namespace FhirProfilePublisher.Engine
             return content;
         }
 
+        // Kevin Mayfield Leeds Teaching Trust 23/1/2017 added ConceptMap
+        private XElement GetConceptMapListing(ResourceFileSet resourceFileSet)
+        {
+            ConceptMapFile[] items = resourceFileSet.ConceptMapFiles
+                .Where(t => isInResourceMaturityList(t.Maturity))
+                .OrderBy(t => t.Name)
+                .ToArray();
+
+            XElement content = GenerateItemList(items);
+
+            return content;
+        }
+
         internal void GenerateValueSetListing(string fileName, ResourceFileSet resourceFileSet)
         {
             XElement content = GetValueSetListing(resourceFileSet);
 
             WritePage(fileName, "Value sets", content);
+        }
+
+        internal void GenerateConceptMapListing(string fileName, ResourceFileSet resourceFileSet)
+        {
+            XElement content = GetConceptMapListing(resourceFileSet);
+
+            WritePage(fileName, "Concept maps", content);
         }
 
         private void WritePage(string fileName, string itemTypeName, XElement content)

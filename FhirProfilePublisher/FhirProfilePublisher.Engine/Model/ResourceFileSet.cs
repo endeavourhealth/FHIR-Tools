@@ -13,6 +13,9 @@ namespace FhirProfilePublisher.Engine
     {
         private List<StructureDefinitionFile> _structureDefinitions = new List<StructureDefinitionFile>();
         private List<ValueSetFile> _valueSets = new List<ValueSetFile>();
+        // START Kevin Mayfield Leeds Teaching Trust 23/1/2017
+        private List<ConceptMapFile> _conceptMaps = new List<ConceptMapFile>();
+        // END Kevin Mayfield Leeds Teaching Trust 23/1/2017
 
         public ResourceFileSet()
         {
@@ -31,6 +34,14 @@ namespace FhirProfilePublisher.Engine
             get
             {
                 return _valueSets.ToArray();
+            }
+        }
+        // Kevin Mayfield Leeds Teaching Trust 23/1/2017 added ConceptMap path
+        public ConceptMapFile[] ConceptMapFiles
+        {
+            get
+            {
+                return _conceptMaps.ToArray();
             }
         }
 
@@ -68,9 +79,11 @@ namespace FhirProfilePublisher.Engine
         {
             get
             {
+                // Kevin Mayfield Leeds Teaching Trust 23/1/2017 added ConceptMap
                 return StructureDefinitionFiles
                     .Select(t => (ResourceFile)t)
                     .Concat(ValueSetFiles.Select(t => (ResourceFile)t))
+                    .Concat(ConceptMapFiles.Select(t => (ResourceFile)t))
                     .ToArray();
             }
         }
@@ -93,6 +106,10 @@ namespace FhirProfilePublisher.Engine
                     _structureDefinitions.Add(new StructureDefinitionFile(fhirProfileXml));
                 else if (rootNodeName == typeof(ValueSet).Name)
                     _valueSets.Add(new ValueSetFile(fhirProfileXml));
+                    // START Kevin Mayfield Leeds Teaching Trust 23/1/2017
+                else if (rootNodeName == typeof(ConceptMap).Name)
+                    _conceptMaps.Add(new ConceptMapFile(fhirProfileXml));
+                // END Kevin Mayfield Leeds Teaching Trust 23/1/2017
                 else
                     throw new NotSupportedException(rootNodeName + " not recognised as FHIR profile resource.");
             }
@@ -168,21 +185,6 @@ namespace FhirProfilePublisher.Engine
             );
         }
 
-        public ValueSet GetValueSet(string url)
-        {
-            ValueSetFile valueSetFile = _valueSets.SingleOrDefault(t => t.CanonicalUrl == url);
-
-            if (valueSetFile != null)
-                return valueSetFile.ValueSet;
-
-            ValueSet valueSet = FhirData.Instance.FindValueSet(url);
-
-            if (valueSet == null)
-                throw new Exception("ValueSet " + url + " not found.");
-
-            return valueSet;
-        }
-
         public Link GetValueSetLink(string canonicalUrl)
         {
             ValueSetFile valueSetFile = _valueSets.SingleOrDefault(t => t.CanonicalUrl == canonicalUrl);
@@ -200,6 +202,21 @@ namespace FhirProfilePublisher.Engine
                 url: valueSet.url.value,
                 display: valueSet.name.value
             );
+        }
+        // Kevin Mayfield Leeds Teaching Trust 23/1/2017 For procesing ValueSet in ConceptMap
+        public ValueSet GetValueSet(string canonicalUrl)
+        {
+            ValueSetFile valueSetFile = _valueSets.SingleOrDefault(t => t.CanonicalUrl == canonicalUrl);
+
+            if (valueSetFile != null)
+                return valueSetFile.ValueSet;
+
+            ValueSet valueSet = FhirData.Instance.FindValueSet(canonicalUrl);
+
+            if (valueSet == null)
+                throw new Exception("ValueSet " + canonicalUrl + " not found.");
+
+            return valueSet;
         }
     }
 }

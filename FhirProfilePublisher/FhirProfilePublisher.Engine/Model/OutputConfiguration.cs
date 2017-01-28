@@ -14,8 +14,8 @@ namespace FhirProfilePublisher.Engine
         public string IndexPageHtml { get; set; }
         public string PageTemplate { get; set; }
 
-        public bool ShowEverythingOnOnePage { get; set; } = true;
-        public bool ShowResourcesInW5Group { get; set; } = false;
-        public ResourceMaturity[] ListOnlyResourcesWithMaturity { get; set; } = null;
+        public bool ShowEverythingOnOnePage { get; set; } 
+        public bool ShowResourcesInW5Group { get; set; } 
+        public ResourceMaturity[] ListOnlyResourcesWithMaturity { get; set; } 
     }
 }

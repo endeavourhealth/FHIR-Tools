@@ -13,6 +13,9 @@ namespace FhirProfilePublisher.Engine
         Style,
         StructureDefinition,
         ValueSet,
-        Html
+        Html,
+        // START Kevin Mayfield Leeds Teaching Trust 23/1/2017
+        ConceptMap
+        // END Kevin Mayfield Leeds Teaching Trust 23/1/2017
     }
 }
