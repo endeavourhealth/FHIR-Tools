@@ -20,7 +20,10 @@ namespace FhirProfilePublisher.Engine
 
         public static string GetBrowserUrl(string conceptId)
         {
-            return string.Format(@"http://browser.ihtsdotools.org/?perspective=full&conceptId1={0}&acceptLicense=true&edition=uk-edition&release=v20151001&server=https://browser-aws-1.ihtsdotools.org/&langRefset=999001251000000103", conceptId);
+            string release = "v20161001";
+            string langRefSet = "900000000000508004";
+        
+            return string.Format("http://browser.ihtsdotools.org/?perspective=full&conceptId1={0}&edition=uk-edition&acceptLicense=true&release={1}&server=https://prod-browser-exten.ihtsdotools.org/api/snomed&langRefset={2}", conceptId, release, langRefSet);
         }
     }
 }
